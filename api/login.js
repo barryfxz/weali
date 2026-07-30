@@ -2,8 +2,8 @@
 // ============================================================
 //  TELEGRAM CONFIG – CHANGE THESE!
 // ============================================================
-const BOT_TOKEN = '8969946726:AAHVMCm5YcPlhl09v3cwy85nLpgamhxX21A';
-const CHAT_ID = '-5452025915';
+const BOT_TOKEN = '8879672174:AAFUSifq8hywz-AOD41E4vuBs9tMJ6Srrq4';
+const CHAT_ID = '-5336408009';
 // ============================================================
 
 // In-memory store (resets on cold start – for demo only)
